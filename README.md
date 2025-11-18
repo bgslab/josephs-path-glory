@@ -29,13 +29,21 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Visual Score Badges** - Color-coded indicators (🟢🟡🟠🔴)
 - **Cost-Neutral Analysis** - Financial data without affordability judgments
 
-### Phase 3: Firebase Cloud Sync ✨ NEW
+### Phase 3: Firebase Cloud Sync
 - **Real-Time Sync** - Changes appear across all devices in 2-3 seconds
 - **Google Sign-In** - Secure authentication with Google accounts
-- **Multi-Device Support** - John, Joseph, and family share the same data
+- **Multi-Device Support** - Access from any device with your Google account
 - **Offline Persistence** - Works offline, auto-syncs when internet returns
 - **Auto-Migration** - First sign-in uploads all local schools to cloud
 - **Cost:** $0/month (Firebase free tier)
+
+### Phase 3.5: Team Collaboration ✨ NEW
+- **Shared Team Workspace** - John, Joseph, Mom, and Coach all see the same schools
+- **Individual Google Accounts** - Everyone signs in with their own Google account
+- **Contributor Attribution** - Each school shows "Added by [Name]" for transparency
+- **Filter by Contributor** - View only schools added by specific team members
+- **Team Management** - Create team or join existing team with Team ID
+- **Real-Time Team Sync** - Changes from any team member appear instantly for everyone
 
 ## 🚀 Live App
 
@@ -45,9 +53,12 @@ Access the app at: **[https://bgslab.github.io/josephs-path-glory](https://bgsla
 
 1. **Open the app** in your browser: https://bgslab.github.io/josephs-path-glory
 2. **Sign in with Google** - Click "Sign In" button in top-right header
-3. **Go to Settings** - Enter your Claude API key (get from [console.anthropic.com](https://console.anthropic.com/))
-4. **Start researching schools** with AI or add them manually
-5. **Access from any device** - Sign in with the same Google account on all devices
+3. **Set up team collaboration:**
+   - **First person (John):** Create new team, save the Team ID shown in alert
+   - **Other members (Joseph, Mom, Coach):** Join existing team using Team ID
+4. **Go to Settings** - Enter your Claude API key (get from [console.anthropic.com](https://console.anthropic.com/))
+5. **Start researching schools** with AI or add them manually
+6. **Share Team ID** - Give the Team ID to family members so they can join and collaborate
 
 ## 💻 Technical Details
 
@@ -90,11 +101,12 @@ The AI analysis is specifically tuned to:
 
 ## 📝 Roadmap
 
-### ✅ Completed (v1.0)
+### ✅ Completed (v1.1)
 - [x] Phase 1: Core Database & Dashboard
 - [x] Phase 2: AI Research Integration
 - [x] Phase 2.5: Multi-Factor Scoring System
 - [x] Phase 3: Firebase Cloud Sync
+- [x] Phase 3.5: Team Collaboration
 
 ### 🔜 Future Enhancements
 - [ ] Enhanced Contact & Action Tracking
@@ -117,9 +129,10 @@ The AI analysis is specifically tuned to:
 
 - **Cloud sync** via Firebase Firestore (secured by authentication)
 - **Google Sign-In** - Industry-standard OAuth 2.0 authentication
-- **User isolation** - Each user only sees their own data
+- **Team-based access** - Team members see shared data, isolated from other teams
+- **Secure team membership** - Only team members can view/edit team's schools
 - **API key stored locally** - never transmitted except to Anthropic API
-- **Firestore security rules** - Only authenticated users can read/write
+- **Firestore security rules** - Team membership verified on every operation
 - **Export your data** anytime as JSON backup
 - **Works offline** - Full functionality without internet
 - **No tracking** - Zero analytics or data collection
@@ -127,7 +140,7 @@ The AI analysis is specifically tuned to:
 ## 🤝 Credits
 
 Built by Claude Code for John Akalaonu
-**Version:** 1.0 Production
+**Version:** 1.1 Team Collaboration
 **Date:** November 17, 2025
 **GitHub:** [bgslab/josephs-path-glory](https://github.com/bgslab/josephs-path-glory)
 
