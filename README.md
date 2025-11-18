@@ -22,24 +22,43 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Contact Scripts** - Ready-to-use Twitter DM and email templates
 - **JUCO Comparison** - For 4-year schools, how they stack up vs JUCO options
 
+### Phase 2.5: Multi-Factor Scoring System
+- **5-Dimension Scoring** - Playing time, position development, transfer pipeline, coaching stability, academic fit
+- **Position Versatility** - Dual assessment for TE and FB/H-back roles
+- **Weighted Calculations** - Different weights by school level (JUCO/D1/D2/D3/NAIA)
+- **Visual Score Badges** - Color-coded indicators (🟢🟡🟠🔴)
+- **Cost-Neutral Analysis** - Financial data without affordability judgments
+
+### Phase 3: Firebase Cloud Sync ✨ NEW
+- **Real-Time Sync** - Changes appear across all devices in 2-3 seconds
+- **Google Sign-In** - Secure authentication with Google accounts
+- **Multi-Device Support** - John, Joseph, and family share the same data
+- **Offline Persistence** - Works offline, auto-syncs when internet returns
+- **Auto-Migration** - First sign-in uploads all local schools to cloud
+- **Cost:** $0/month (Firebase free tier)
+
 ## 🚀 Live App
 
-Access the app at: **[https://jakalaonu.github.io/josephs-path-glory](https://jakalaonu.github.io/josephs-path-glory)**
+Access the app at: **[https://bgslab.github.io/josephs-path-glory](https://bgslab.github.io/josephs-path-glory)**
 
 ## 🔑 Setup
 
-1. **Open the app** in your browser
-2. **Go to Settings** (bottom navigation)
-3. **Enter your Claude API key** (get from [console.anthropic.com](https://console.anthropic.com/))
+1. **Open the app** in your browser: https://bgslab.github.io/josephs-path-glory
+2. **Sign in with Google** - Click "Sign In" button in top-right header
+3. **Go to Settings** - Enter your Claude API key (get from [console.anthropic.com](https://console.anthropic.com/))
 4. **Start researching schools** with AI or add them manually
+5. **Access from any device** - Sign in with the same Google account on all devices
 
 ## 💻 Technical Details
 
 - **Stack:** Pure vanilla JavaScript (no frameworks)
-- **Storage:** localStorage (5MB capacity, ~75 schools)
-- **Dependencies:** None (zero external libraries)
-- **File Size:** Single 88KB HTML file
+- **Storage:** localStorage + Firebase Firestore (hybrid sync)
+- **Dependencies:** Firebase SDK (CDN)
+- **Authentication:** Google Sign-In via Firebase Auth
+- **Database:** Firestore (real-time NoSQL database)
+- **File Size:** Single ~100KB HTML file
 - **UTF-8 Safe:** All emojis verified ✅
+- **Cost:** $0/month (Firebase free tier)
 
 ## 📊 Data Structure
 
@@ -71,39 +90,46 @@ The AI analysis is specifically tuned to:
 
 ## 📝 Roadmap
 
-### ✅ Completed
+### ✅ Completed (v1.0)
 - [x] Phase 1: Core Database & Dashboard
 - [x] Phase 2: AI Research Integration
+- [x] Phase 2.5: Multi-Factor Scoring System
+- [x] Phase 3: Firebase Cloud Sync
 
-### 🔜 Planned
-- [ ] Phase 3: Enhanced Contact & Action Tracking
+### 🔜 Future Enhancements
+- [ ] Enhanced Contact & Action Tracking
   - Quick-add contact entry form
   - Quick-add action item form
   - Interactive ratings system
   - Overdue action highlights
-- [ ] Phase 4: Comparison & Analytics
+- [ ] Comparison & Analytics
   - Side-by-side school comparison (2-3 schools)
   - Visual charts (cost comparison, ratings radar)
   - Timeline view of recruiting process
-- [ ] Phase 5: Polish & Optimization
-  - Offline PWA support
+- [ ] Polish & Optimization
+  - PWA support for installable app
   - Push notifications for action items
   - Advanced filtering (combine multiple criteria)
   - Print-friendly views
+  - Score override with version history
 
 ## 🔒 Privacy & Security
 
-- **All data stored locally** in your browser (localStorage)
+- **Cloud sync** via Firebase Firestore (secured by authentication)
+- **Google Sign-In** - Industry-standard OAuth 2.0 authentication
+- **User isolation** - Each user only sees their own data
 - **API key stored locally** - never transmitted except to Anthropic API
-- **No backend server** - zero data collection
+- **Firestore security rules** - Only authenticated users can read/write
 - **Export your data** anytime as JSON backup
-- **Works offline** (except AI Research feature)
+- **Works offline** - Full functionality without internet
+- **No tracking** - Zero analytics or data collection
 
 ## 🤝 Credits
 
 Built by Claude Code for John Akalaonu
-Version: 1.0
-Date: November 17, 2025
+**Version:** 1.0 Production
+**Date:** November 17, 2025
+**GitHub:** [bgslab/josephs-path-glory](https://github.com/bgslab/josephs-path-glory)
 
 ---
 
