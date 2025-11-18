@@ -754,6 +754,14 @@
                     <button class="filter-btn" data-filter="NAIA">NAIA</button>
                 </div>
 
+                <!-- Filter by Contributor -->
+                <div class="form-group">
+                    <label for="contributor-filter">Filter by Contributor</label>
+                    <select id="contributor-filter">
+                        <option value="all">All Contributors</option>
+                    </select>
+                </div>
+
                 <!-- Sort -->
                 <div class="form-group">
                     <label for="sort-select">Sort by</label>
@@ -1515,12 +1523,12 @@
 
                 // Migrate local schools to Firestore
                 async migrateLocalToCloud() {
-                    if (!auth.currentUser) return;
+                    if (!auth.currentUser || !App.Team.currentTeam) return;
 
                     try {
-                        // Check if user already has cloud data
+                        // Check if team already has cloud data
                         const snapshot = await db.collection('schools')
-                            .where('userId', '==', auth.currentUser.uid)
+                            .where('teamId', '==', App.Team.currentTeam.id)
                             .limit(1)
                             .get();
 
@@ -1542,11 +1550,17 @@
 
                         // Upload each school to Firestore
                         const batch = db.batch();
+                        const currentUserName = auth.currentUser.displayName || auth.currentUser.email.split('@')[0];
+
                         localSchools.forEach(school => {
                             const docRef = db.collection('schools').doc(school.id);
                             batch.set(docRef, {
                                 ...school,
-                                userId: auth.currentUser.uid,
+                                teamId: App.Team.currentTeam.id,
+                                createdBy: auth.currentUser.email,
+                                createdByName: currentUserName,
+                                lastEditedBy: auth.currentUser.email,
+                                lastEditedByName: currentUserName,
                                 syncedAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
                         });
@@ -1562,16 +1576,16 @@
 
                 // Start real-time sync listener
                 startRealtimeSync() {
-                    if (!auth.currentUser) return;
+                    if (!auth.currentUser || !App.Team.currentTeam) return;
 
                     // Stop any existing listener
                     this.stopRealtimeSync();
 
                     console.log('Starting real-time sync...');
 
-                    // Listen to schools collection for this user
+                    // Listen to schools collection for this team
                     this.unsubscribe = db.collection('schools')
-                        .where('userId', '==', auth.currentUser.uid)
+                        .where('teamId', '==', App.Team.currentTeam.id)
                         .onSnapshot((snapshot) => {
                             console.log('Received cloud update');
 
@@ -1612,19 +1626,34 @@
 
                 // Save school to cloud
                 async saveSchoolToCloud(school) {
-                    if (!auth.currentUser) {
-                        console.warn('Not signed in, saving locally only');
+                    if (!auth.currentUser || !App.Team.currentTeam) {
+                        console.warn('Not signed in or no team, saving locally only');
                         return;
                     }
 
                     try {
                         this.showSyncStatus('Syncing...');
 
-                        await db.collection('schools').doc(school.id).set({
+                        const currentUserName = auth.currentUser.displayName || auth.currentUser.email.split('@')[0];
+                        const docRef = db.collection('schools').doc(school.id);
+                        const docSnapshot = await docRef.get();
+
+                        // Prepare school data with team and contributor info
+                        const schoolData = {
                             ...school,
-                            userId: auth.currentUser.uid,
+                            teamId: App.Team.currentTeam.id,
+                            lastEditedBy: auth.currentUser.email,
+                            lastEditedByName: currentUserName,
                             syncedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
+                        };
+
+                        // If school doesn't exist yet, add createdBy fields
+                        if (!docSnapshot.exists) {
+                            schoolData.createdBy = auth.currentUser.email;
+                            schoolData.createdByName = currentUserName;
+                        }
+
+                        await docRef.set(schoolData);
 
                         this.showSyncStatus('Synced ✓');
                     } catch (error) {
@@ -2213,6 +2242,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
             UI: {
                 currentView: 'dashboard',
                 currentFilter: 'all',
+                currentContributorFilter: 'all',
                 currentSort: 'interest',
                 searchQuery: '',
                 editingSchoolId: null,
@@ -2240,6 +2270,12 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     // Sort select
                     document.getElementById('sort-select').addEventListener('change', (e) => {
                         this.currentSort = e.target.value;
+                        this.renderSchools();
+                    });
+
+                    // Contributor filter
+                    document.getElementById('contributor-filter').addEventListener('change', (e) => {
+                        this.currentContributorFilter = e.target.value;
                         this.renderSchools();
                     });
 
@@ -2306,9 +2342,17 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                 renderSchools() {
                     let schools = App.Storage.getSchools();
 
-                    // Filter
+                    // Populate contributor filter dropdown
+                    this.populateContributorFilter(schools);
+
+                    // Filter by level
                     if (this.currentFilter !== 'all') {
                         schools = schools.filter(s => s.level === this.currentFilter);
+                    }
+
+                    // Filter by contributor
+                    if (this.currentContributorFilter !== 'all') {
+                        schools = schools.filter(s => s.createdBy === this.currentContributorFilter);
                     }
 
                     // Search
@@ -2332,6 +2376,37 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     } else {
                         emptyState.classList.add('hidden');
                         grid.innerHTML = schools.map(s => this.renderSchoolCard(s)).join('');
+                    }
+                },
+
+                // Populate contributor filter dropdown
+                populateContributorFilter(schools) {
+                    const contributorFilter = document.getElementById('contributor-filter');
+                    const currentValue = contributorFilter.value;
+
+                    // Get unique contributors
+                    const contributors = new Map();
+                    schools.forEach(school => {
+                        if (school.createdBy && school.createdByName) {
+                            contributors.set(school.createdBy, school.createdByName);
+                        }
+                    });
+
+                    // Rebuild dropdown options
+                    contributorFilter.innerHTML = '<option value="all">All Contributors</option>';
+                    contributors.forEach((name, email) => {
+                        const option = document.createElement('option');
+                        option.value = email;
+                        option.textContent = name;
+                        contributorFilter.appendChild(option);
+                    });
+
+                    // Restore previous selection if it still exists
+                    if (currentValue && contributorFilter.querySelector(`option[value="${currentValue}"]`)) {
+                        contributorFilter.value = currentValue;
+                    } else {
+                        contributorFilter.value = 'all';
+                        this.currentContributorFilter = 'all';
                     }
                 },
 
@@ -2434,6 +2509,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                                 ${school.likelihood ? `<span class="school-badge ${likelihoodClass}">${school.likelihood}</span>` : ''}
                             </div>
                             <div class="school-meta">${school.location || 'Location not set'}</div>
+                            ${school.createdByName ? `<div class="school-meta" style="font-size: 0.8em; opacity: 0.7;">Added by ${school.createdByName}</div>` : ''}
                             ${school.offerStatus && school.offerStatus !== 'None' ?
                                 `<div class="school-meta text-success">📋 ${school.offerStatus}</div>` : ''}
                             <div class="school-action">
@@ -3052,6 +3128,65 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
 
                 closeModal(modalId) {
                     document.getElementById(modalId).classList.remove('active');
+                },
+
+                // Show team setup modal
+                showTeamSetupModal() {
+                    document.getElementById('team-setup-modal').classList.add('active');
+                },
+
+                // Create team from modal
+                async createTeamFromModal() {
+                    const teamName = document.getElementById('new-team-name').value.trim() || "Joseph's Recruiting Team";
+
+                    try {
+                        const team = await App.Team.createTeam(teamName);
+
+                        // Show success message with team ID for sharing
+                        alert(`Team created successfully!\n\nTeam Name: ${team.name}\nTeam ID: ${team.id}\n\nShare this Team ID with family members and coaches so they can join.`);
+
+                        // Close modal
+                        this.closeModal('team-setup-modal');
+
+                        // Start migration and sync
+                        await App.CloudSync.migrateLocalToCloud();
+                        App.CloudSync.startRealtimeSync();
+
+                        // Refresh dashboard
+                        this.renderDashboard();
+                    } catch (error) {
+                        console.error('Error creating team:', error);
+                        alert('Failed to create team: ' + error.message);
+                    }
+                },
+
+                // Join team from modal
+                async joinTeamFromModal() {
+                    const teamId = document.getElementById('join-team-id').value.trim();
+
+                    if (!teamId) {
+                        alert('Please enter a Team ID');
+                        return;
+                    }
+
+                    try {
+                        const team = await App.Team.joinTeam(teamId);
+
+                        // Show success message
+                        alert(`Successfully joined team: ${team.name}`);
+
+                        // Close modal
+                        this.closeModal('team-setup-modal');
+
+                        // Start real-time sync (no migration needed, we're joining existing data)
+                        App.CloudSync.startRealtimeSync();
+
+                        // Refresh dashboard
+                        this.renderDashboard();
+                    } catch (error) {
+                        console.error('Error joining team:', error);
+                        alert('Failed to join team: ' + error.message);
+                    }
                 }
             },
 
