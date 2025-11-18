@@ -1002,6 +1002,76 @@
         </div>
     </div>
 
+    <!-- VERIFY & UPDATE MODAL -->
+    <div id="verify-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🔍 Verify & Update School Data</h2>
+                <button class="modal-close" onclick="App.UI.closeModal('verify-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="verify-school-id">
+
+                <p class="text-muted mb-2">Update outdated AI data with current information. Check the school's official athletics website or 247Sports for the latest details.</p>
+
+                <h3>Coaching Staff</h3>
+                <div class="form-group">
+                    <label for="verify-head-coach">Head Coach</label>
+                    <input type="text" id="verify-head-coach" placeholder="e.g., Ryan Walters (2023-present)">
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-te-coach">TE/Position Coach</label>
+                    <input type="text" id="verify-te-coach" placeholder="e.g., Drew Mehringer">
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-recruiting-contact">Recruiting Contact</label>
+                    <input type="text" id="verify-recruiting-contact">
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-phone">Phone</label>
+                    <input type="tel" id="verify-phone">
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-email">Email</label>
+                    <input type="email" id="verify-email">
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-twitter">Twitter Handle(s)</label>
+                    <input type="text" id="verify-twitter" placeholder="@CoachName, @TeamRecruiting">
+                </div>
+
+                <h3 class="mt-2">Current Season Info</h3>
+                <div class="form-group">
+                    <label for="verify-recent-record">Recent Record</label>
+                    <input type="text" id="verify-recent-record" placeholder="e.g., 4-8 in 2024, 1-2 in 2025">
+                    <small class="text-muted">Include current season and 1-2 previous seasons</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="verify-program-momentum">Program Momentum</label>
+                    <select id="verify-program-momentum">
+                        <option value="">Select...</option>
+                        <option value="Up">Up - Improving record/recruiting</option>
+                        <option value="Down">Down - Declining performance</option>
+                        <option value="Stable">Stable - Consistent performance</option>
+                        <option value="Rebuilding">Rebuilding - New coach/system</option>
+                    </select>
+                </div>
+
+                <p class="text-muted mt-2"><strong>Tip:</strong> Check official athletics sites, 247Sports, or On3 for current info.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="App.UI.closeModal('verify-modal')">Cancel</button>
+                <button class="btn btn-success" onclick="App.UI.saveVerification()">✅ Save Verified Data</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script>
         /**
@@ -1472,6 +1542,15 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                             researchDate: new Date().toISOString()
                         },
 
+                        // Verification tracking
+                        lastVerifiedDate: null,
+                        manualOverrides: {
+                            headCoach: false,
+                            positionCoach: false,
+                            recentRecord: false,
+                            programMomentum: false
+                        },
+
                         notes: `Researched with AI on ${new Date().toLocaleDateString()}`
                     };
 
@@ -1656,7 +1735,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     return `
                         <div class="school-card" onclick="App.UI.showSchoolDetail('${school.id}')">
                             <div class="school-card-header">
-                                <div class="school-name">${school.schoolName}</div>
+                                <div class="school-name">${school.schoolName} ${this.getVerificationBadge(school)}</div>
                                 ${rating > 0 ? `<div class="school-rating">⭐ ${rating.toFixed(1)}</div>` : ''}
                             </div>
                             <div class="school-meta">
@@ -1689,7 +1768,10 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                             ${school.likelihood ? `<span class="school-badge badge-${school.likelihood.toLowerCase()}">${school.likelihood}</span>` : ''}
                         </div>
 
+                        ${this.renderVerificationWarning(school)}
+
                         <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="App.UI.showVerifyModal('${schoolId}')">🔍 Verify & Update</button>
                             <button class="btn btn-secondary" onclick="App.UI.editSchool('${schoolId}')">✏️ Edit</button>
                             <button class="btn btn-danger" onclick="App.UI.deleteSchool('${schoolId}')">🗑️ Delete</button>
                         </div>
@@ -1736,6 +1818,146 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     });
 
                     this.showView('detail');
+                },
+
+                // Render verification warning
+                renderVerificationWarning(school) {
+                    const researchDate = school.aiAnalysis?.researchDate;
+                    const verifiedDate = school.lastVerifiedDate;
+
+                    if (!researchDate) return ''; // No AI data, no warning needed
+
+                    const now = new Date();
+                    const research = new Date(researchDate);
+                    const daysSinceResearch = Math.floor((now - research) / (1000 * 60 * 60 * 24));
+
+                    let warningClass = '';
+                    let warningIcon = '';
+                    let warningMessage = '';
+
+                    if (verifiedDate) {
+                        const verified = new Date(verifiedDate);
+                        const daysSinceVerification = Math.floor((now - verified) / (1000 * 60 * 60 * 24));
+
+                        if (daysSinceVerification <= 30) {
+                            warningClass = 'text-success';
+                            warningIcon = '✅';
+                            warningMessage = `Data verified ${App.Utils.formatDate(verifiedDate)}`;
+                        } else if (daysSinceVerification <= 90) {
+                            warningClass = 'text-warning';
+                            warningIcon = '⚠️';
+                            warningMessage = `Last verified ${daysSinceVerification} days ago. Consider re-verifying coaching staff and current season info.`;
+                        } else {
+                            warningClass = 'text-danger';
+                            warningIcon = '🔴';
+                            warningMessage = `Data hasn't been verified in ${daysSinceVerification} days. Coaching staff and season info likely outdated.`;
+                        }
+                    } else if (daysSinceResearch > 30) {
+                        warningClass = 'text-warning';
+                        warningIcon = '⚠️';
+                        warningMessage = `AI data from ${App.Utils.formatDate(researchDate)}. Coaching staff and current season info may be outdated. Click "Verify & Update" to confirm current details.`;
+                    } else {
+                        return ''; // Recent research, not verified yet, but fresh enough
+                    }
+
+                    return `
+                        <div style="background: var(--color-bg-secondary); border: 1px solid var(--color-${warningClass === 'text-success' ? 'success' : warningClass === 'text-danger' ? 'danger' : 'warning'}); border-radius: var(--border-radius); padding: 0.75rem; margin-bottom: 1rem;">
+                            <p class="${warningClass}" style="margin: 0;"><strong>${warningIcon} ${warningMessage}</strong></p>
+                        </div>
+                    `;
+                },
+
+                // Get verification badge for school card
+                getVerificationBadge(school) {
+                    const verifiedDate = school.lastVerifiedDate;
+
+                    if (!verifiedDate) {
+                        return '<span style="font-size: 0.75rem; color: var(--color-text-muted);">⚠️ AI</span>';
+                    }
+
+                    const now = new Date();
+                    const verified = new Date(verifiedDate);
+                    const daysSince = Math.floor((now - verified) / (1000 * 60 * 60 * 24));
+
+                    if (daysSince <= 30) {
+                        return '<span style="font-size: 0.75rem; color: var(--color-success);">✅</span>';
+                    } else if (daysSince <= 90) {
+                        return '<span style="font-size: 0.75rem; color: var(--color-warning);">⚠️</span>';
+                    } else {
+                        return '<span style="font-size: 0.75rem; color: var(--color-danger);">🔴</span>';
+                    }
+                },
+
+                // Show verify modal
+                showVerifyModal(schoolId) {
+                    const school = App.Storage.getSchool(schoolId);
+                    if (!school) return;
+
+                    document.getElementById('verify-school-id').value = schoolId;
+                    document.getElementById('verify-head-coach').value = school.headCoach || '';
+                    document.getElementById('verify-te-coach').value = school.positionCoach || '';
+                    document.getElementById('verify-recruiting-contact').value = school.recruitingContact || '';
+                    document.getElementById('verify-phone').value = school.phone || '';
+                    document.getElementById('verify-email').value = school.email || '';
+                    document.getElementById('verify-twitter').value = school.twitter || '';
+                    document.getElementById('verify-recent-record').value = school.aiAnalysis?.recentRecord || '';
+                    document.getElementById('verify-program-momentum').value = school.aiAnalysis?.programMomentum?.split(' ')[0] || '';
+
+                    this.openModal('verify-modal');
+                },
+
+                // Save verification
+                saveVerification() {
+                    const schoolId = document.getElementById('verify-school-id').value;
+                    const school = App.Storage.getSchool(schoolId);
+                    if (!school) return;
+
+                    // Get form values
+                    const headCoach = document.getElementById('verify-head-coach').value.trim();
+                    const teCoach = document.getElementById('verify-te-coach').value.trim();
+                    const recruitingContact = document.getElementById('verify-recruiting-contact').value.trim();
+                    const phone = document.getElementById('verify-phone').value.trim();
+                    const email = document.getElementById('verify-email').value.trim();
+                    const twitter = document.getElementById('verify-twitter').value.trim();
+                    const recentRecord = document.getElementById('verify-recent-record').value.trim();
+                    const programMomentum = document.getElementById('verify-program-momentum').value;
+
+                    // Update school data
+                    const updated = {
+                        ...school,
+                        headCoach,
+                        positionCoach: teCoach,
+                        recruitingContact,
+                        phone,
+                        email,
+                        twitter,
+                        lastVerifiedDate: new Date().toISOString(),
+                        manualOverrides: {
+                            headCoach: headCoach !== school.headCoach,
+                            positionCoach: teCoach !== school.positionCoach,
+                            recentRecord: recentRecord !== school.aiAnalysis?.recentRecord,
+                            programMomentum: programMomentum && programMomentum !== school.aiAnalysis?.programMomentum?.split(' ')[0]
+                        }
+                    };
+
+                    // Update AI analysis if present
+                    if (updated.aiAnalysis) {
+                        if (recentRecord) {
+                            updated.aiAnalysis.recentRecord = recentRecord;
+                        }
+                        if (programMomentum) {
+                            updated.aiAnalysis.programMomentum = programMomentum;
+                        }
+                    }
+
+                    // Save
+                    App.Storage.saveSchool(updated);
+
+                    // Close modal and refresh detail view
+                    this.closeModal('verify-modal');
+                    this.showSchoolDetail(schoolId);
+
+                    alert('✅ School data verified and updated!');
                 },
 
                 // Render Overview Tab
