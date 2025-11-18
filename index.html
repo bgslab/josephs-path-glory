@@ -1242,7 +1242,7 @@ YOUR APPROACH:
 CRITICAL CONTEXT - JOSEPH'S SITUATION:
 - HS senior TE who missed junior season (injury) - LIMITED FILM
 - Mid-to-low 2.X GPA, no standardized test scores - ACADEMIC RISK
-- Family has financial constraints (can take loans but limited) - $120k+ debt = deal-breaker
+- Needs objective financial data for informed decision-making
 - Needs to build more game film for transfer opportunities
 - Two years of eligibility remaining (critical for 4-year vs JUCO decision)
 - Looking at JUCO or D2/D3/NAIA options
@@ -1250,17 +1250,17 @@ CRITICAL CONTEXT - JOSEPH'S SITUATION:
 - Top JUCO targets: Coffeyville CC (2024 All-American TE), Iowa Western CC (Hall of Fame coach, 150+ D1 transfers), Hutchinson CC (2024 National Champions)
 
 ASSESSMENT PRIORITIES:
-1. Financial viability - Will this bankrupt his family?
+1. Financial data - Objective costs, scholarship potential, ROI analysis (cost vs playing time vs transfer pipeline)
 2. TE development track record - Specific examples, not generic claims
 3. Program stability - Coaching turnover = major red flag
 4. Transfer pipeline - Where do players go after? (for JUCO) / Can he compete? (for 4-year)
 5. Playing time reality - Don't sugarcoat his chances
 
-BE BRUTALLY HONEST:
+BE FACTUAL AND ANALYTICAL:
 - If program is in chaos, say so explicitly
-- If costs are prohibitive for his situation, call it out
+- Provide cost data without affordability judgments (e.g., "Lower cost provides more flexibility" not "Family can't afford this")
 - If TE development is weak/nonexistent, flag it prominently
-- If JUCO is clearly better option (for 4-year schools), state it directly
+- For 4-year schools, provide objective JUCO comparison (cost differences, tradeoffs) without declaring one "clearly better"
 - Challenge recruiting narratives with evidence
 
 Provide your response in this EXACT JSON format (DO NOT include markdown code blocks, ONLY the raw JSON):
@@ -1285,13 +1285,13 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
   "scholarship_potential": "None (D3)/Limited/Moderate/Strong - with explanation specific to Joseph's profile",
   "red_flags": ["List of specific concerns for Joseph's situation"],
   "opportunities": ["List of specific positive factors for Joseph"],
-  "financial_assessment": "Cost-benefit analysis specifically for Joseph's family situation",
+  "financial_comparison": "Objective cost analysis with ROI: total cost vs scholarship potential vs transfer pipeline vs playing time opportunities. Compare to other levels (e.g., JUCO $16k, D2 $64k with scholarship, D3 $168k). Neutral tone - no affordability judgments.",
   "overall_ranking": "Reach/Target/Safety",
   "recommendation": "High Priority/Medium Priority/Low Priority/Skip - with brief rationale",
   "contact_strategy": "Recommended approach (Twitter DM first/Email/Phone/In-person) with timing",
   "contact_script_twitter": "Sample 280-character Twitter DM ready to copy/paste",
   "contact_script_email": "Sample email with subject line and 2-3 paragraph body ready to copy/paste",
-  "comparison_to_juco": "If this is a 4-year school: How does this compare to JUCO option for Joseph? If JUCO school: null"
+  "comparison_to_juco": "If this is a 4-year school: Objective comparison to JUCO (cost, playing time, transfer opportunities, tradeoffs). Neutral tone - present both options fairly. If JUCO school: null"
 }`;
                 },
 
@@ -1306,13 +1306,13 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                         </div>
 
                         <div style="display: grid; gap: 1.5rem;">
-                            <!-- Financial Analysis -->
+                            <!-- Financial Overview -->
                             <div style="background: var(--color-bg-secondary); border-radius: var(--border-radius); padding: 1rem;">
-                                <h3>💰 Financial Analysis</h3>
+                                <h3>💰 Financial Overview</h3>
                                 ${data.tuition_cost ? `<p><strong>Annual Cost:</strong> ${data.tuition_cost}</p>` : ''}
                                 ${data.four_year_cost ? `<p><strong>Total Cost:</strong> ${data.four_year_cost}</p>` : ''}
                                 ${data.scholarship_potential ? `<p><strong>Scholarship Potential:</strong> ${data.scholarship_potential}</p>` : ''}
-                                ${data.financial_assessment ? `<p style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--color-border);">${data.financial_assessment}</p>` : ''}
+                                ${data.financial_comparison ? `<p style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--color-border);"><strong>Cost Comparison & ROI:</strong><br>${data.financial_comparison}</p>` : ''}
                             </div>
 
                             <!-- Coaching Staff -->
@@ -1463,7 +1463,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                             transferPipeline: data.transfer_pipeline,
                             redFlags: data.red_flags || [],
                             opportunities: data.opportunities || [],
-                            financialAssessment: data.financial_assessment,
+                            financialComparison: data.financial_comparison,
                             recommendation: data.recommendation,
                             contactStrategy: data.contact_strategy,
                             contactScriptTwitter: data.contact_script_twitter,
