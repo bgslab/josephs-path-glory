@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joseph's Path to Glory</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <style>
         /**
          * Joseph's Path to Glory - v1.0
@@ -691,6 +697,13 @@
             <button class="btn btn-secondary nav-btn" data-view="actions">Actions</button>
             <button class="btn btn-secondary nav-btn" data-view="settings">Settings</button>
         </div>
+        <!-- Auth UI -->
+        <div id="auth-ui" style="display: flex; align-items: center; gap: 0.5rem; margin-left: auto;">
+            <span id="user-email" style="font-size: 0.9rem; color: var(--color-text-secondary);"></span>
+            <button id="sign-in-btn" class="btn btn-primary btn-small" onclick="App.Auth.signIn()" style="display: none;">Sign In</button>
+            <button id="sign-out-btn" class="btn btn-secondary btn-small" onclick="App.Auth.signOut()" style="display: none;">Sign Out</button>
+            <span id="sync-status" style="font-size: 0.85rem; color: var(--color-success); display: none;">☁️ Synced</span>
+        </div>
     </div>
 
     <!-- Main Container -->
@@ -1082,10 +1095,101 @@
     <script>
         /**
          * Joseph's Path to Glory - Application Logic
-         * Version: 1.0
+         * Version: 2.0 - Cloud Sync Edition
          */
 
+        // ===== FIREBASE INITIALIZATION =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHAFSwcBkFn9uy8T-Mqer927_c-BzfBRI",
+            authDomain: "joseph-path-glory.firebaseapp.com",
+            projectId: "joseph-path-glory",
+            storageBucket: "joseph-path-glory.firebasestorage.app",
+            messagingSenderId: "624170158090",
+            appId: "1:624170158090:web:a77969957a9554179ef7f3"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Enable offline persistence
+        db.enablePersistence()
+            .catch((err) => {
+                if (err.code === 'failed-precondition') {
+                    console.warn('Offline persistence failed: Multiple tabs open');
+                } else if (err.code === 'unimplemented') {
+                    console.warn('Offline persistence not available in this browser');
+                }
+            });
+
         const App = {
+            // ===== AUTH MODULE =====
+            Auth: {
+                currentUser: null,
+
+                // Initialize authentication
+                init() {
+                    // Listen for auth state changes
+                    auth.onAuthStateChanged((user) => {
+                        this.currentUser = user;
+                        this.updateUI();
+
+                        if (user) {
+                            console.log('User signed in:', user.email);
+                            // Migrate local data to cloud on first sign-in
+                            App.CloudSync.migrateLocalToCloud();
+                            // Start real-time sync
+                            App.CloudSync.startRealtimeSync();
+                        } else {
+                            console.log('User signed out');
+                            // Stop real-time sync
+                            App.CloudSync.stopRealtimeSync();
+                        }
+                    });
+                },
+
+                // Update auth UI
+                updateUI() {
+                    const signInBtn = document.getElementById('sign-in-btn');
+                    const signOutBtn = document.getElementById('sign-out-btn');
+                    const userEmail = document.getElementById('user-email');
+
+                    if (this.currentUser) {
+                        signInBtn.style.display = 'none';
+                        signOutBtn.style.display = 'inline-block';
+                        userEmail.textContent = this.currentUser.email;
+                        userEmail.style.display = 'inline';
+                    } else {
+                        signInBtn.style.display = 'inline-block';
+                        signOutBtn.style.display = 'none';
+                        userEmail.textContent = '';
+                        userEmail.style.display = 'none';
+                    }
+                },
+
+                // Sign in with Google
+                async signIn() {
+                    try {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        await auth.signInWithPopup(provider);
+                    } catch (error) {
+                        console.error('Sign-in error:', error);
+                        alert('Sign-in failed: ' + error.message);
+                    }
+                },
+
+                // Sign out
+                async signOut() {
+                    try {
+                        await auth.signOut();
+                    } catch (error) {
+                        console.error('Sign-out error:', error);
+                        alert('Sign-out failed: ' + error.message);
+                    }
+                }
+            },
+
             // ===== STORAGE MODULE =====
             Storage: {
                 STORAGE_KEY: 'josephs-path-glory-data',
@@ -1147,6 +1251,10 @@
                     }
 
                     this.setData(data);
+
+                    // Sync to cloud (async, non-blocking)
+                    App.CloudSync.saveSchoolToCloud(school);
+
                     return school;
                 },
 
@@ -1155,6 +1263,9 @@
                     const data = this.getData();
                     data.schools = data.schools.filter(s => s.id !== id);
                     this.setData(data);
+
+                    // Delete from cloud (async, non-blocking)
+                    App.CloudSync.deleteSchoolFromCloud(id);
                 },
 
                 // Get/Set API Key
@@ -1216,6 +1327,157 @@
                             App.UI.renderDashboard();
                             alert('All data cleared.');
                         }
+                    }
+                }
+            },
+
+            // ===== CLOUD SYNC MODULE =====
+            CloudSync: {
+                unsubscribe: null,
+                isSyncing: false,
+
+                // Migrate local schools to Firestore
+                async migrateLocalToCloud() {
+                    if (!auth.currentUser) return;
+
+                    try {
+                        // Check if user already has cloud data
+                        const snapshot = await db.collection('schools')
+                            .where('userId', '==', auth.currentUser.uid)
+                            .limit(1)
+                            .get();
+
+                        // If cloud data exists, don't migrate (avoid duplicates)
+                        if (!snapshot.empty) {
+                            console.log('Cloud data already exists, skipping migration');
+                            return;
+                        }
+
+                        // Get local schools
+                        const localSchools = App.Storage.getSchools();
+
+                        if (localSchools.length === 0) {
+                            console.log('No local schools to migrate');
+                            return;
+                        }
+
+                        console.log(`Migrating ${localSchools.length} schools to cloud...`);
+
+                        // Upload each school to Firestore
+                        const batch = db.batch();
+                        localSchools.forEach(school => {
+                            const docRef = db.collection('schools').doc(school.id);
+                            batch.set(docRef, {
+                                ...school,
+                                userId: auth.currentUser.uid,
+                                syncedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        });
+
+                        await batch.commit();
+                        console.log('Migration complete!');
+                        this.showSyncStatus('Migrated to cloud ✓');
+
+                    } catch (error) {
+                        console.error('Migration error:', error);
+                    }
+                },
+
+                // Start real-time sync listener
+                startRealtimeSync() {
+                    if (!auth.currentUser) return;
+
+                    // Stop any existing listener
+                    this.stopRealtimeSync();
+
+                    console.log('Starting real-time sync...');
+
+                    // Listen to schools collection for this user
+                    this.unsubscribe = db.collection('schools')
+                        .where('userId', '==', auth.currentUser.uid)
+                        .onSnapshot((snapshot) => {
+                            console.log('Received cloud update');
+
+                            // Get current local data
+                            const data = App.Storage.getData();
+                            const cloudSchools = [];
+
+                            snapshot.forEach((doc) => {
+                                cloudSchools.push({
+                                    id: doc.id,
+                                    ...doc.data()
+                                });
+                            });
+
+                            // Update localStorage with cloud data
+                            data.schools = cloudSchools;
+                            App.Storage.setData(data);
+
+                            // Refresh UI if on dashboard
+                            if (App.UI.currentView === 'dashboard') {
+                                App.UI.renderSchools();
+                            }
+
+                            this.showSyncStatus('Synced ✓');
+                        }, (error) => {
+                            console.error('Sync error:', error);
+                        });
+                },
+
+                // Stop real-time sync listener
+                stopRealtimeSync() {
+                    if (this.unsubscribe) {
+                        this.unsubscribe();
+                        this.unsubscribe = null;
+                        console.log('Stopped real-time sync');
+                    }
+                },
+
+                // Save school to cloud
+                async saveSchoolToCloud(school) {
+                    if (!auth.currentUser) {
+                        console.warn('Not signed in, saving locally only');
+                        return;
+                    }
+
+                    try {
+                        this.showSyncStatus('Syncing...');
+
+                        await db.collection('schools').doc(school.id).set({
+                            ...school,
+                            userId: auth.currentUser.uid,
+                            syncedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+
+                        this.showSyncStatus('Synced ✓');
+                    } catch (error) {
+                        console.error('Cloud save error:', error);
+                        this.showSyncStatus('Sync failed ✗');
+                    }
+                },
+
+                // Delete school from cloud
+                async deleteSchoolFromCloud(schoolId) {
+                    if (!auth.currentUser) return;
+
+                    try {
+                        await db.collection('schools').doc(schoolId).delete();
+                    } catch (error) {
+                        console.error('Cloud delete error:', error);
+                    }
+                },
+
+                // Show sync status
+                showSyncStatus(message) {
+                    const statusEl = document.getElementById('sync-status');
+                    if (statusEl) {
+                        statusEl.textContent = message;
+                        statusEl.style.display = 'inline';
+
+                        // Hide after 3 seconds
+                        setTimeout(() => {
+                            statusEl.style.display = 'none';
+                        }, 3000);
                     }
                 }
             },
@@ -2643,6 +2905,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
         // Initialize app on load
         document.addEventListener('DOMContentLoaded', () => {
             App.Storage.init();
+            App.Auth.init();
             App.UI.init();
         });
     </script>
