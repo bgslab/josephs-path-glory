@@ -87,13 +87,13 @@ Each school record includes:
 This app is built for Joseph's specific situation:
 - HS senior TE who missed junior season (injury) → LIMITED FILM
 - Mid-to-low 2.X GPA, no test scores → ACADEMIC RISK
-- Family financial constraints → $120k+ debt = deal-breaker
+- Family has financial considerations → App provides cost data for informed decisions
 - Needs to build more film → JUCO vs 4-year decision critical
 - Current offers: Elmhurst D3, interest from Beloit D3, Quincy D2
 - Top JUCO targets: Coffeyville CC, Iowa Western CC, Hutchinson CC
 
 The AI analysis is specifically tuned to:
-1. Financial viability (will this bankrupt the family?)
+1. Financial analysis (present cost breakdowns, scholarship potential, 4-year expenses for family to assess fit)
 2. TE development track record (specific examples)
 3. Program stability (coaching turnover = red flag)
 4. Transfer pipeline (where do players go next?)
