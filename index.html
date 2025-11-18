@@ -2221,10 +2221,23 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                         <p><strong>Likelihood:</strong> ${school.likelihood || 'Not set'}</p>
                         <p><strong>Offer Status:</strong> ${school.offerStatus || 'None'}</p>
 
+                        ${school.aiAnalysis?.scores ? `
+                            <div class="overall-rating mt-2" style="background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary)); margin-bottom: 1rem;">
+                                <div class="value">${(() => {
+                                    const score = App.API.calculateOverallScore({ level: school.level, scores: school.aiAnalysis.scores });
+                                    return `${App.API.getScoreBadge(score)} ${score.toFixed(1)}`;
+                                })()}</div>
+                                <div class="label">AI Overall Score</div>
+                            </div>
+                            ${school.aiAnalysis.positionFit ? `
+                                <p style="text-align: center; margin-top: 0.5rem; font-weight: 600;">Best Fit: ${school.aiAnalysis.positionFit.best_fit_position}</p>
+                            ` : ''}
+                        ` : ''}
+
                         ${school.ratings ? `
                             <div class="overall-rating mt-2">
                                 <div class="value">${school.ratings.overall.toFixed(1)}</div>
-                                <div class="label">Overall Rating</div>
+                                <div class="label">Manual Rating</div>
                             </div>
                             <div class="rating-group">
                                 <div class="rating-row">
@@ -2248,7 +2261,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                                     <span>${'⭐'.repeat(school.ratings.location || 0)}</span>
                                 </div>
                             </div>
-                        ` : '<p class="text-muted">No ratings yet. Edit school to add ratings.</p>'}
+                        ` : !school.aiAnalysis?.scores ? '<p class="text-muted">No ratings yet. Edit school to add ratings or use AI Research.</p>' : ''}
 
                         <h3 class="mt-2">Next Action</h3>
                         <p>${school.nextAction || 'No action set'}</p>
@@ -2326,6 +2339,83 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     if (school.aiAnalysis) {
                         const ai = school.aiAnalysis;
                         return `
+                            ${ai.positionFit ? `
+                                <!-- Position Fit Assessment -->
+                                <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-accent-primary); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1.5rem;">
+                                    <h3>📍 Position Fit Assessment</h3>
+                                    <div style="background: var(--color-bg-tertiary); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                                        <p style="margin: 0 0 0.5rem 0; font-weight: 700; font-size: 1.1rem;">Best Fit: ${ai.positionFit.best_fit_position} ${App.API.getScoreBadge(ai.positionFit.fullback_hback?.fit_score > ai.positionFit.tight_end?.fit_score ? ai.positionFit.fullback_hback?.fit_score : ai.positionFit.tight_end?.fit_score)}</p>
+                                        <p style="margin: 0;">${ai.positionFit.best_fit_reasoning || ''}</p>
+                                    </div>
+                                    ${ai.positionFit.tight_end ? `
+                                        <div style="margin-bottom: 0.75rem;">
+                                            <p style="margin: 0; font-weight: 600;">Tight End ${App.API.getScoreBadge(ai.positionFit.tight_end.fit_score)} ${ai.positionFit.tight_end.fit_score}/5</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: var(--color-text-secondary);">Usage: ${ai.positionFit.tight_end.usage_frequency} • Role: ${ai.positionFit.tight_end.role_type}</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">${ai.positionFit.tight_end.notes}</p>
+                                        </div>
+                                    ` : ''}
+                                    ${ai.positionFit.fullback_hback ? `
+                                        <div>
+                                            <p style="margin: 0; font-weight: 600;">Fullback/H-back ${App.API.getScoreBadge(ai.positionFit.fullback_hback.fit_score)} ${ai.positionFit.fullback_hback.fit_score}/5</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: var(--color-text-secondary);">Usage: ${ai.positionFit.fullback_hback.usage_frequency} • Role: ${ai.positionFit.fullback_hback.role_type}</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">${ai.positionFit.fullback_hback.notes}</p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+
+                            ${ai.scores ? `
+                                <!-- Score Breakdown -->
+                                <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-accent-primary); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1.5rem;">
+                                    <h3>📊 Score Breakdown</h3>
+                                    ${ai.scores.playing_time ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Playing Time</span>
+                                            <span style="font-weight: 700;">${App.API.getScoreBadge(ai.scores.playing_time.value)} ${ai.scores.playing_time.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${ai.scores.playing_time.reasoning}</p>
+                                    ` : ''}
+                                    ${ai.scores.position_development ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Position Development</span>
+                                            <span style="font-weight: 700;">${App.API.getScoreBadge(ai.scores.position_development.value)} ${ai.scores.position_development.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${ai.scores.position_development.reasoning}</p>
+                                    ` : ''}
+                                    ${ai.scores.transfer_pipeline ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Transfer/Advancement Pipeline</span>
+                                            <span style="font-weight: 700;">${App.API.getScoreBadge(ai.scores.transfer_pipeline.value)} ${ai.scores.transfer_pipeline.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${ai.scores.transfer_pipeline.reasoning}</p>
+                                    ` : ''}
+                                    ${ai.scores.coaching_stability ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Coaching Stability</span>
+                                            <span style="font-weight: 700;">${App.API.getScoreBadge(ai.scores.coaching_stability.value)} ${ai.scores.coaching_stability.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${ai.scores.coaching_stability.reasoning}</p>
+                                    ` : ''}
+                                    ${ai.scores.academic_fit ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Academic Fit</span>
+                                            <span style="font-weight: 700;">${App.API.getScoreBadge(ai.scores.academic_fit.value)} ${ai.scores.academic_fit.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${ai.scores.academic_fit.reasoning}</p>
+                                    ` : ''}
+                                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--color-accent-primary);">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span style="font-weight: 700; font-size: 1.1rem;">Overall Score</span>
+                                            <span style="font-weight: 700; font-size: 1.2rem;">${(() => {
+                                                const score = App.API.calculateOverallScore({ level: school.level, scores: ai.scores });
+                                                return `${App.API.getScoreBadge(score)} ${score.toFixed(1)}/5`;
+                                            })()}</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-muted); margin: 0.25rem 0 0 0;">Weighted for ${school.level} level</p>
+                                    </div>
+                                </div>
+                            ` : ''}
+
                             <h3>Program Analysis</h3>
                             ${ai.recentRecord ? `<p><strong>Recent Record:</strong> ${ai.recentRecord}</p>` : ''}
                             ${ai.programMomentum ? `<p><strong>Momentum:</strong> ${ai.programMomentum}</p>` : ''}
@@ -2336,6 +2426,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                             ${ai.tuitionCost ? `<p><strong>Annual Cost:</strong> ${ai.tuitionCost}</p>` : ''}
                             ${ai.fourYearCost ? `<p><strong>Total Cost:</strong> ${ai.fourYearCost}</p>` : ''}
                             ${ai.scholarshipPotential ? `<p><strong>Scholarship Potential:</strong> ${ai.scholarshipPotential}</p>` : ''}
+                            ${ai.financialComparison ? `<p><strong>Cost Comparison:</strong> ${ai.financialComparison}</p>` : ''}
 
                             ${ai.redFlags && ai.redFlags.length > 0 ? `
                                 <h3 class="mt-2">⚠️ Red Flags</h3>
@@ -2350,13 +2441,23 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                                     ${ai.opportunities.map(o => `<li>${o}</li>`).join('')}
                                 </ul>
                             ` : ''}
+
+                            ${ai.recommendation ? `
+                                <h3 class="mt-2">Recommendation</h3>
+                                <p style="color: var(--color-accent-secondary); font-weight: 700;">${ai.recommendation}</p>
+                            ` : ''}
+
+                            ${ai.comparisonToJuco ? `
+                                <h3 class="mt-2">vs JUCO Option</h3>
+                                <p>${ai.comparisonToJuco}</p>
+                            ` : ''}
                         `;
                     } else {
                         return `
                             <div class="empty-state">
                                 <div class="empty-icon">🤖</div>
                                 <div class="empty-message">No AI analysis yet</div>
-                                <p class="text-muted">AI Research will be available in Phase 2</p>
+                                <p class="text-muted">Use AI Research to analyze this school</p>
                             </div>
                         `;
                     }
