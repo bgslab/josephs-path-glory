@@ -1269,7 +1269,9 @@
                         });
 
                         if (!response.ok) {
-                            throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                            const errorBody = await response.text();
+                            console.error('API Error Response:', errorBody);
+                            throw new Error(`API Error: ${response.status} - ${errorBody.substring(0, 200)}`);
                         }
 
                         const data = await response.json();
