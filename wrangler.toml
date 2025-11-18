@@ -1,0 +1,6 @@
+name = "josephs-path-glory-proxy"
+main = "cloudflare-worker.js"
+compatibility_date = "2024-11-01"
+
+[env.production]
+name = "josephs-path-glory-proxy"

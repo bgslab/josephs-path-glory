@@ -1174,8 +1174,8 @@
                         // Build prompt from JOSEPH_CONTEXT.md
                         const prompt = this.buildResearchPrompt(schoolName);
 
-                        // Call Claude API
-                        const response = await fetch('https://api.anthropic.com/v1/messages', {
+                        // Call Claude API via Cloudflare Worker proxy
+                        const response = await fetch('https://josephs-path-glory-proxy.dronescout-api.workers.dev', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
