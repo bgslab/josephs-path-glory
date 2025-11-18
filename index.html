@@ -1096,6 +1096,40 @@
         </div>
     </div>
 
+    <!-- Team Setup Modal -->
+    <div id="team-setup-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🤝 Team Setup</h2>
+            </div>
+            <div class="modal-body">
+                <p>To collaborate with family and coaches, you need to create or join a team.</p>
+
+                <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
+                    <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-accent-primary); border-radius: var(--border-radius); padding: 1rem;">
+                        <h3>Create New Team</h3>
+                        <p class="text-muted">Start a new recruiting team and invite others to join.</p>
+                        <div class="form-group">
+                            <label for="new-team-name">Team Name</label>
+                            <input type="text" id="new-team-name" placeholder="e.g., Joseph's Recruiting Team">
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="App.UI.createTeamFromModal()">Create Team</button>
+                    </div>
+
+                    <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-info); border-radius: var(--border-radius); padding: 1rem;">
+                        <h3>Join Existing Team</h3>
+                        <p class="text-muted">Enter the Team ID shared by your family member or coach.</p>
+                        <div class="form-group">
+                            <label for="join-team-id">Team ID</label>
+                            <input type="text" id="join-team-id" placeholder="Paste team ID here">
+                        </div>
+                        <button class="btn btn-secondary btn-block" onclick="App.UI.joinTeamFromModal()">Join Team</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script>
         /**
@@ -1136,20 +1170,33 @@
                 // Initialize authentication
                 init() {
                     // Listen for auth state changes
-                    auth.onAuthStateChanged((user) => {
+                    auth.onAuthStateChanged(async (user) => {
                         this.currentUser = user;
                         this.updateUI();
 
                         if (user) {
                             console.log('User signed in:', user.email);
-                            // Migrate local data to cloud on first sign-in
-                            App.CloudSync.migrateLocalToCloud();
-                            // Start real-time sync
-                            App.CloudSync.startRealtimeSync();
+
+                            // Check if user has a team
+                            const team = await App.Team.getCurrentTeam();
+
+                            if (!team) {
+                                // No team - show setup modal
+                                console.log('No team found, showing setup modal');
+                                App.UI.showTeamSetupModal();
+                            } else {
+                                // Has team - proceed with migration and sync
+                                console.log('Team found:', team.name);
+                                // Migrate local data to cloud on first sign-in
+                                App.CloudSync.migrateLocalToCloud();
+                                // Start real-time sync
+                                App.CloudSync.startRealtimeSync();
+                            }
                         } else {
                             console.log('User signed out');
                             // Stop real-time sync
                             App.CloudSync.stopRealtimeSync();
+                            App.Team.currentTeam = null;
                         }
                     });
                 },
@@ -1192,6 +1239,131 @@
                         console.error('Sign-out error:', error);
                         alert('Sign-out failed: ' + error.message);
                     }
+                }
+            },
+
+            // ===== TEAM MODULE =====
+            Team: {
+                currentTeam: null,
+
+                // Get current user's team
+                async getCurrentTeam() {
+                    if (!auth.currentUser) return null;
+
+                    try {
+                        // Check if user is member of any team
+                        const snapshot = await db.collection('teams')
+                            .where('members', 'array-contains', auth.currentUser.email)
+                            .limit(1)
+                            .get();
+
+                        if (!snapshot.empty) {
+                            const teamDoc = snapshot.docs[0];
+                            this.currentTeam = {
+                                id: teamDoc.id,
+                                ...teamDoc.data()
+                            };
+                            return this.currentTeam;
+                        }
+
+                        return null;
+                    } catch (error) {
+                        console.error('Error getting team:', error);
+                        return null;
+                    }
+                },
+
+                // Create a new team
+                async createTeam(teamName) {
+                    if (!auth.currentUser) {
+                        throw new Error('Must be signed in to create a team');
+                    }
+
+                    try {
+                        const teamData = {
+                            name: teamName || 'Recruiting Team',
+                            owner: auth.currentUser.email,
+                            ownerName: auth.currentUser.displayName || auth.currentUser.email,
+                            members: [auth.currentUser.email],
+                            memberNames: {
+                                [auth.currentUser.email]: auth.currentUser.displayName || auth.currentUser.email.split('@')[0]
+                            },
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+
+                        const docRef = await db.collection('teams').add(teamData);
+
+                        this.currentTeam = {
+                            id: docRef.id,
+                            ...teamData
+                        };
+
+                        console.log('Team created:', docRef.id);
+                        return this.currentTeam;
+                    } catch (error) {
+                        console.error('Error creating team:', error);
+                        throw error;
+                    }
+                },
+
+                // Join existing team
+                async joinTeam(teamId) {
+                    if (!auth.currentUser) {
+                        throw new Error('Must be signed in to join a team');
+                    }
+
+                    try {
+                        const teamDoc = await db.collection('teams').doc(teamId).get();
+
+                        if (!teamDoc.exists) {
+                            throw new Error('Team not found');
+                        }
+
+                        // Add user to team members
+                        await db.collection('teams').doc(teamId).update({
+                            members: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email),
+                            [`memberNames.${auth.currentUser.email}`]: auth.currentUser.displayName || auth.currentUser.email.split('@')[0]
+                        });
+
+                        this.currentTeam = {
+                            id: teamDoc.id,
+                            ...teamDoc.data()
+                        };
+
+                        console.log('Joined team:', teamId);
+                        return this.currentTeam;
+                    } catch (error) {
+                        console.error('Error joining team:', error);
+                        throw error;
+                    }
+                },
+
+                // Add member to team (owner only)
+                async addMember(email) {
+                    if (!auth.currentUser || !this.currentTeam) {
+                        throw new Error('Must be signed in and have a team');
+                    }
+
+                    if (this.currentTeam.owner !== auth.currentUser.email) {
+                        throw new Error('Only team owner can add members');
+                    }
+
+                    try {
+                        await db.collection('teams').doc(this.currentTeam.id).update({
+                            members: firebase.firestore.FieldValue.arrayUnion(email)
+                        });
+
+                        console.log('Added member:', email);
+                    } catch (error) {
+                        console.error('Error adding member:', error);
+                        throw error;
+                    }
+                },
+
+                // Get team member names
+                getMemberName(email) {
+                    if (!this.currentTeam) return email;
+                    return this.currentTeam.memberNames?.[email] || email.split('@')[0];
                 }
             },
 
