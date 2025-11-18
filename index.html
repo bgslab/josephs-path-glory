@@ -742,6 +742,12 @@
                     <select id="sort-select">
                         <option value="interest">Interest Level</option>
                         <option value="rating">Overall Rating</option>
+                        <option value="overall-score">Overall Score</option>
+                        <option value="playing-time">Playing Time Score</option>
+                        <option value="position-dev">Position Development</option>
+                        <option value="transfer">Transfer Pipeline</option>
+                        <option value="coaching">Coaching Stability</option>
+                        <option value="academic">Academic Fit</option>
                         <option value="date">Date Added</option>
                         <option value="name">School Name</option>
                     </select>
@@ -1312,25 +1318,38 @@ YOUR APPROACH:
 CRITICAL CONTEXT - JOSEPH'S SITUATION:
 - HS senior TE who missed junior season (injury) - LIMITED FILM
 - Mid-to-low 2.X GPA, no standardized test scores - ACADEMIC RISK
-- Needs objective financial data for informed decision-making
+- Position versatility: PRIMARY = Blocking TE/Fullback hybrid, SECONDARY = Pass catching
+- Strengths: In-line blocking, lead blocking, pass protection, physicality
+- Can play: In-line TE, H-back, Fullback, move TE, Y-TE (blocking emphasis)
 - Needs to build more game film for transfer opportunities
 - Two years of eligibility remaining (critical for 4-year vs JUCO decision)
-- Looking at JUCO or D2/D3/NAIA options
+- Looking at JUCO, D2, D3, NAIA, or D1 options
 - Current situation: 1 actual offer (Elmhurst D3), active recruiting interest from Beloit (D3) and Quincy (D2)
 - Top JUCO targets: Coffeyville CC (2024 All-American TE), Iowa Western CC (Hall of Fame coach, 150+ D1 transfers), Hutchinson CC (2024 National Champions)
 
-ASSESSMENT PRIORITIES:
-1. Financial data - Objective costs, scholarship potential, ROI analysis (cost vs playing time vs transfer pipeline)
-2. TE development track record - Specific examples, not generic claims
-3. Program stability - Coaching turnover = major red flag
-4. Transfer pipeline - Where do players go after? (for JUCO) / Can he compete? (for 4-year)
-5. Playing time reality - Don't sugarcoat his chances
+POSITION ASSESSMENT REQUIREMENT:
+Analyze fit for BOTH positions:
+1. Tight End role (blocking TE, Y-TE, in-line TE, hybrid TE)
+2. Fullback/H-back role (lead blocker, I-formation FB, offset H-back)
+
+Don't disqualify schools that don't use TEs much if they use FBs heavily. Provide separate usage/fit scores for each position.
+
+ASSESSMENT PRIORITIES (DO NOT base recommendations on cost - cost is informational only):
+1. Playing time likelihood - Can Joseph realistically compete for snaps at this position?
+2. Position development - Track record developing TEs or FBs (specific examples with names/years)
+3. Transfer/advancement pipeline - Where do players go next? (D1 transfers for JUCO, NFL for D1, etc.)
+4. Coaching stability - Turnover, tenure, program momentum
+5. Academic fit - GPA requirements, academic support for 2.X GPA student
+
+SCORING REQUIREMENT:
+Provide 1-5 scores (decimals allowed) for each assessment priority. Explain reasoning for each score.
 
 BE FACTUAL AND ANALYTICAL:
 - If program is in chaos, say so explicitly
-- Provide cost data without affordability judgments (e.g., "Lower cost provides more flexibility" not "Family can't afford this")
-- If TE development is weak/nonexistent, flag it prominently
-- For 4-year schools, provide objective JUCO comparison (cost differences, tradeoffs) without declaring one "clearly better"
+- Provide cost data WITHOUT affordability judgments (NO "financially prohibitive", NO "unrealistic", NO "can't afford")
+- If position development is weak/nonexistent, flag it prominently
+- For 4-year schools, provide objective JUCO comparison showing TRADEOFFS (not declaring one "clearly better")
+- Recommendations based ONLY on playing time, development, pipeline, coaching, academics - NEVER on cost
 - Challenge recruiting narratives with evidence
 
 Provide your response in this EXACT JSON format (DO NOT include markdown code blocks, ONLY the raw JSON):
@@ -1355,13 +1374,53 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
   "scholarship_potential": "None (D3)/Limited/Moderate/Strong - with explanation specific to Joseph's profile",
   "red_flags": ["List of specific concerns for Joseph's situation"],
   "opportunities": ["List of specific positive factors for Joseph"],
-  "financial_comparison": "Objective cost analysis with ROI: total cost vs scholarship potential vs transfer pipeline vs playing time opportunities. Compare to other levels (e.g., JUCO $16k, D2 $64k with scholarship, D3 $168k). Neutral tone - no affordability judgments.",
+  "financial_comparison": "Objective cost analysis with ROI: total cost vs scholarship potential vs transfer pipeline vs playing time opportunities. Compare to other levels (e.g., JUCO $16k, D2 $64k with scholarship, D3 $168k). Neutral tone - NO affordability judgments, NO 'financially prohibitive' language.",
+  "position_fit": {
+    "tight_end": {
+      "usage_frequency": "High/Moderate/Low/None",
+      "role_type": "Blocking TE/Receiving TE/Hybrid/Y-TE/Move TE",
+      "usage_score": 3.5,
+      "fit_score": 4.0,
+      "notes": "Explanation of TE usage and fit for Joseph's blocking-first skill set"
+    },
+    "fullback_hback": {
+      "usage_frequency": "High/Moderate/Low/None",
+      "role_type": "Lead blocker/I-formation FB/H-back/Offset/None",
+      "usage_score": 5.0,
+      "fit_score": 5.0,
+      "notes": "Explanation of FB/H-back usage and fit for Joseph's blocking strengths"
+    },
+    "best_fit_position": "Fullback/H-back or Tight End",
+    "best_fit_reasoning": "Why this position is the best fit based on scheme and Joseph's strengths"
+  },
+  "scores": {
+    "playing_time": {
+      "value": 4.5,
+      "reasoning": "Specific factors: roster depth, returning players, offensive system, win/loss record affecting playing time"
+    },
+    "position_development": {
+      "value": 5.0,
+      "reasoning": "Track record with specific examples: player names, years, achievements (All-American, NFL, D1 transfers)"
+    },
+    "transfer_pipeline": {
+      "value": 4.0,
+      "reasoning": "For JUCO: D1 transfer destinations and success rate. For D1: NFL draft picks. For D2/D3: grad transfers or pro opportunities"
+    },
+    "coaching_stability": {
+      "value": 4.5,
+      "reasoning": "Head coach tenure, position coach stability, recent turnover, program momentum"
+    },
+    "academic_fit": {
+      "value": 3.0,
+      "reasoning": "GPA requirements, academic support services, retention rate for student-athletes"
+    }
+  },
   "overall_ranking": "Reach/Target/Safety",
-  "recommendation": "High Priority/Medium Priority/Low Priority/Skip - with brief rationale",
-  "contact_strategy": "Recommended approach (Twitter DM first/Email/Phone/In-person) with timing",
-  "contact_script_twitter": "Sample 280-character Twitter DM ready to copy/paste",
-  "contact_script_email": "Sample email with subject line and 2-3 paragraph body ready to copy/paste",
-  "comparison_to_juco": "If this is a 4-year school: Objective comparison to JUCO (cost, playing time, transfer opportunities, tradeoffs). Neutral tone - present both options fairly. If JUCO school: null"
+  "recommendation": "High Priority/Medium Priority/Low Priority/Skip - Based ONLY on playing time, development, pipeline, coaching, academics. NOT on cost.",
+  "contact_strategy": "Recommended approach (Twitter DM first/Email/Phone/In-person) with timing. Mention best fit position in outreach.",
+  "contact_script_twitter": "Sample 280-character Twitter DM mentioning best fit position, ready to copy/paste",
+  "contact_script_email": "Sample email with subject line and 2-3 paragraph body mentioning best fit position, ready to copy/paste",
+  "comparison_to_juco": "If this is a 4-year school: Objective comparison to JUCO showing TRADEOFFS of both paths. Neutral tone - present both options fairly, don't declare one 'clearly better'. If JUCO school: null"
 }`;
                 },
 
@@ -1376,6 +1435,83 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                         </div>
 
                         <div style="display: grid; gap: 1.5rem;">
+                            ${data.position_fit ? `
+                                <!-- Position Fit Assessment -->
+                                <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-accent-primary); border-radius: var(--border-radius); padding: 1rem;">
+                                    <h3>📍 Position Fit Assessment</h3>
+                                    <div style="background: var(--color-bg-tertiary); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                                        <p style="margin: 0 0 0.5rem 0; font-weight: 700; font-size: 1.1rem;">Best Fit: ${data.position_fit.best_fit_position} ${this.getScoreBadge(data.position_fit.fullback_hback?.fit_score > data.position_fit.tight_end?.fit_score ? data.position_fit.fullback_hback?.fit_score : data.position_fit.tight_end?.fit_score)}</p>
+                                        <p style="margin: 0;">${data.position_fit.best_fit_reasoning || ''}</p>
+                                    </div>
+                                    ${data.position_fit.tight_end ? `
+                                        <div style="margin-bottom: 0.75rem;">
+                                            <p style="margin: 0; font-weight: 600;">Tight End ${this.getScoreBadge(data.position_fit.tight_end.fit_score)} ${data.position_fit.tight_end.fit_score}/5</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: var(--color-text-secondary);">Usage: ${data.position_fit.tight_end.usage_frequency} • Role: ${data.position_fit.tight_end.role_type}</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">${data.position_fit.tight_end.notes}</p>
+                                        </div>
+                                    ` : ''}
+                                    ${data.position_fit.fullback_hback ? `
+                                        <div>
+                                            <p style="margin: 0; font-weight: 600;">Fullback/H-back ${this.getScoreBadge(data.position_fit.fullback_hback.fit_score)} ${data.position_fit.fullback_hback.fit_score}/5</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: var(--color-text-secondary);">Usage: ${data.position_fit.fullback_hback.usage_frequency} • Role: ${data.position_fit.fullback_hback.role_type}</p>
+                                            <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">${data.position_fit.fullback_hback.notes}</p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+
+                            ${data.scores ? `
+                                <!-- Score Breakdown -->
+                                <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-accent-primary); border-radius: var(--border-radius); padding: 1rem;">
+                                    <h3>📊 Score Breakdown</h3>
+                                    ${data.scores.playing_time ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Playing Time</span>
+                                            <span style="font-weight: 700;">${this.getScoreBadge(data.scores.playing_time.value)} ${data.scores.playing_time.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${data.scores.playing_time.reasoning}</p>
+                                    ` : ''}
+                                    ${data.scores.position_development ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Position Development</span>
+                                            <span style="font-weight: 700;">${this.getScoreBadge(data.scores.position_development.value)} ${data.scores.position_development.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${data.scores.position_development.reasoning}</p>
+                                    ` : ''}
+                                    ${data.scores.transfer_pipeline ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Transfer/Advancement Pipeline</span>
+                                            <span style="font-weight: 700;">${this.getScoreBadge(data.scores.transfer_pipeline.value)} ${data.scores.transfer_pipeline.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${data.scores.transfer_pipeline.reasoning}</p>
+                                    ` : ''}
+                                    ${data.scores.coaching_stability ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Coaching Stability</span>
+                                            <span style="font-weight: 700;">${this.getScoreBadge(data.scores.coaching_stability.value)} ${data.scores.coaching_stability.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${data.scores.coaching_stability.reasoning}</p>
+                                    ` : ''}
+                                    ${data.scores.academic_fit ? `
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                            <span>Academic Fit</span>
+                                            <span style="font-weight: 700;">${this.getScoreBadge(data.scores.academic_fit.value)} ${data.scores.academic_fit.value}/5</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.25rem 0 0.75rem 0;">${data.scores.academic_fit.reasoning}</p>
+                                    ` : ''}
+                                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--color-accent-primary);">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span style="font-weight: 700; font-size: 1.1rem;">Overall Score</span>
+                                            <span style="font-weight: 700; font-size: 1.2rem;">${(() => {
+                                                const score = this.calculateOverallScore(data);
+                                                return `${this.getScoreBadge(score)} ${score.toFixed(1)}/5`;
+                                            })()}</span>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: var(--color-text-muted); margin: 0.25rem 0 0 0;">Weighted for ${data.level} level</p>
+                                    </div>
+                                </div>
+                            ` : ''}
+
                             <!-- Financial Overview -->
                             <div style="background: var(--color-bg-secondary); border-radius: var(--border-radius); padding: 1rem;">
                                 <h3>💰 Financial Overview</h3>
@@ -1539,6 +1675,8 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                             contactScriptTwitter: data.contact_script_twitter,
                             contactScriptEmail: data.contact_script_email,
                             comparisonToJuco: data.comparison_to_juco,
+                            positionFit: data.position_fit || null,
+                            scores: data.scores || null,
                             researchDate: new Date().toISOString()
                         },
 
@@ -1571,6 +1709,62 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     document.getElementById('research-results').classList.add('hidden');
                     document.getElementById('research-error').classList.add('hidden');
                     document.getElementById('research-loading').classList.add('hidden');
+                },
+
+                // Get score badge emoji based on numeric score
+                getScoreBadge(score) {
+                    if (score >= 4.0) return '🟢';
+                    if (score >= 3.0) return '🟡';
+                    if (score >= 2.0) return '🟠';
+                    return '🔴';
+                },
+
+                // Calculate overall weighted score based on school level
+                calculateOverallScore(data) {
+                    if (!data.scores) return 0;
+
+                    const weights = this.getWeightsByLevel(data.level);
+                    const scores = data.scores;
+
+                    const weighted = (
+                        (scores.playing_time?.value || 0) * weights.playingTime +
+                        (scores.position_development?.value || 0) * weights.positionDevelopment +
+                        (scores.transfer_pipeline?.value || 0) * weights.transferPipeline +
+                        (scores.coaching_stability?.value || 0) * weights.coaching +
+                        (scores.academic_fit?.value || 0) * weights.academic
+                    ) / 5;
+
+                    return weighted;
+                },
+
+                // Get scoring weights by school level
+                getWeightsByLevel(level) {
+                    if (level === 'JUCO') {
+                        return {
+                            playingTime: 0.25,
+                            positionDevelopment: 0.25,
+                            transferPipeline: 0.35,
+                            coaching: 0.10,
+                            academic: 0.05
+                        };
+                    } else if (level === 'D1') {
+                        return {
+                            playingTime: 0.25,
+                            positionDevelopment: 0.30,
+                            transferPipeline: 0.10,
+                            coaching: 0.20,
+                            academic: 0.15
+                        };
+                    } else {
+                        // D2, D3, NAIA
+                        return {
+                            playingTime: 0.30,
+                            positionDevelopment: 0.30,
+                            transferPipeline: 0.20,
+                            coaching: 0.15,
+                            academic: 0.05
+                        };
+                    }
                 }
             },
 
@@ -1714,6 +1908,40 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                         case 'rating':
                             sorted.sort((a, b) => (b.ratings?.overall || 0) - (a.ratings?.overall || 0));
                             break;
+                        case 'overall-score':
+                            sorted.sort((a, b) => {
+                                const scoreA = a.aiAnalysis?.scores ?
+                                    App.API.calculateOverallScore({ level: a.level, scores: a.aiAnalysis.scores }) : 0;
+                                const scoreB = b.aiAnalysis?.scores ?
+                                    App.API.calculateOverallScore({ level: b.level, scores: b.aiAnalysis.scores }) : 0;
+                                return scoreB - scoreA;
+                            });
+                            break;
+                        case 'playing-time':
+                            sorted.sort((a, b) =>
+                                (b.aiAnalysis?.scores?.playing_time?.value || 0) - (a.aiAnalysis?.scores?.playing_time?.value || 0)
+                            );
+                            break;
+                        case 'position-dev':
+                            sorted.sort((a, b) =>
+                                (b.aiAnalysis?.scores?.position_development?.value || 0) - (a.aiAnalysis?.scores?.position_development?.value || 0)
+                            );
+                            break;
+                        case 'transfer':
+                            sorted.sort((a, b) =>
+                                (b.aiAnalysis?.scores?.transfer_pipeline?.value || 0) - (a.aiAnalysis?.scores?.transfer_pipeline?.value || 0)
+                            );
+                            break;
+                        case 'coaching':
+                            sorted.sort((a, b) =>
+                                (b.aiAnalysis?.scores?.coaching_stability?.value || 0) - (a.aiAnalysis?.scores?.coaching_stability?.value || 0)
+                            );
+                            break;
+                        case 'academic':
+                            sorted.sort((a, b) =>
+                                (b.aiAnalysis?.scores?.academic_fit?.value || 0) - (a.aiAnalysis?.scores?.academic_fit?.value || 0)
+                            );
+                            break;
                         case 'interest':
                         default:
                             const interestOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
@@ -1732,12 +1960,34 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     const rating = school.ratings?.overall || 0;
                     const nextAction = school.nextAction || 'No action set';
 
+                    // Calculate overall score if AI data exists
+                    let overallScore = 0;
+                    let scoreBadge = '';
+                    if (school.aiAnalysis?.scores) {
+                        overallScore = App.API.calculateOverallScore({
+                            level: school.level,
+                            scores: school.aiAnalysis.scores
+                        });
+                        scoreBadge = App.API.getScoreBadge(overallScore);
+                    }
+
+                    // Get best fit position
+                    const bestFitPosition = school.aiAnalysis?.positionFit?.best_fit_position || null;
+
                     return `
                         <div class="school-card" onclick="App.UI.showSchoolDetail('${school.id}')">
                             <div class="school-card-header">
                                 <div class="school-name">${school.schoolName} ${this.getVerificationBadge(school)}</div>
                                 ${rating > 0 ? `<div class="school-rating">⭐ ${rating.toFixed(1)}</div>` : ''}
                             </div>
+
+                            ${overallScore > 0 ? `
+                                <div class="school-meta" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-weight: bold;">${scoreBadge} ${overallScore.toFixed(1)}</span> Overall Score
+                                    ${bestFitPosition ? ` • Best: ${bestFitPosition}` : ''}
+                                </div>
+                            ` : ''}
+
                             <div class="school-meta">
                                 <span class="school-badge ${levelClass}">${school.level}</span>
                                 ${school.likelihood ? `<span class="school-badge ${likelihoodClass}">${school.likelihood}</span>` : ''}
