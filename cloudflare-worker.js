@@ -1,7 +1,8 @@
 /**
  * Cloudflare Worker - Anthropic API Proxy
  * For: Joseph's Path to Glory
- * Purpose: Bypass CORS restrictions for browser-based Claude API calls
+ * Purpose: Bypass CORS restrictions + secure API key storage for family use
+ * API Key: Stored in Worker secrets (CLAUDE_API_KEY) - family doesn't need to enter it
  */
 
 export default {
@@ -12,7 +13,7 @@ export default {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, x-api-key, anthropic-version',
+          'Access-Control-Allow-Headers': 'Content-Type, anthropic-version',
           'Access-Control-Max-Age': '86400',
         }
       });
@@ -24,12 +25,14 @@ export default {
     }
 
     try {
-      // Get the API key from the request header
-      const apiKey = request.headers.get('x-api-key');
+      // Use API key from Worker secrets (secure - never exposed to client)
+      const apiKey = env.CLAUDE_API_KEY;
 
       if (!apiKey) {
-        return new Response(JSON.stringify({ error: 'API key required' }), {
-          status: 401,
+        return new Response(JSON.stringify({
+          error: 'Server configuration error: CLAUDE_API_KEY secret not set. Run: npx wrangler secret put CLAUDE_API_KEY'
+        }), {
+          status: 500,
           headers: { 'Content-Type': 'application/json' }
         });
       }
@@ -37,7 +40,7 @@ export default {
       // Get request body
       const body = await request.json();
 
-      // Forward to Anthropic API
+      // Forward to Anthropic API with stored key
       const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
@@ -58,7 +61,7 @@ export default {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, x-api-key, anthropic-version',
+          'Access-Control-Allow-Headers': 'Content-Type, anthropic-version',
         }
       });
 

@@ -858,10 +858,9 @@
         <div id="settings-view" class="view">
             <h2>Settings</h2>
 
-            <div class="form-group">
-                <label for="api-key-input">Claude API Key (for AI Research - Phase 2)</label>
-                <input type="password" id="api-key-input" placeholder="sk-ant-...">
-                <small class="text-muted">Stored locally in your browser. Never shared.</small>
+            <div class="info-box" style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <h3 style="margin-top: 0;">✅ AI Research Ready</h3>
+                <p style="margin-bottom: 0;">Claude API is configured and ready to use. No setup required - just click "Research with AI" to analyze any school!</p>
             </div>
 
             <div class="btn-group">
@@ -1701,14 +1700,6 @@
                         return;
                     }
 
-                    // Check for API key
-                    const apiKey = App.Storage.getApiKey();
-                    if (!apiKey) {
-                        alert('Please enter your Claude API key in Settings first');
-                        App.UI.showView('settings');
-                        return;
-                    }
-
                     // Show loading state
                     document.getElementById('research-loading').classList.remove('hidden');
                     document.getElementById('research-error').classList.add('hidden');
@@ -1719,11 +1710,11 @@
                         const prompt = this.buildResearchPrompt(schoolName);
 
                         // Call Claude API via Cloudflare Worker proxy
+                        // API key stored securely in Worker secrets - no need to send from client
                         const response = await fetch('https://josephs-path-glory-proxy.dronescout-api.workers.dev', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'x-api-key': apiKey,
                                 'anthropic-version': '2023-06-01'
                             },
                             body: JSON.stringify({
@@ -2285,12 +2276,8 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                         this.renderSchools();
                     });
 
-                    // API Key input
-                    const apiKeyInput = document.getElementById('api-key-input');
-                    apiKeyInput.value = App.Storage.getApiKey();
-                    apiKeyInput.addEventListener('change', (e) => {
-                        App.Storage.setApiKey(e.target.value);
-                    });
+                    // API Key no longer needed - stored securely in Cloudflare Worker
+                    // Family members don't need to enter anything
 
                     // Render initial view
                     this.renderDashboard();
