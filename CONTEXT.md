@@ -1,6 +1,6 @@
 # Joseph's Path to Glory - Project Context
-**Last Updated:** November 17, 2025
-**Current Version:** v1.1 Team Collaboration
+**Last Updated:** November 19, 2025
+**Current Version:** v1.2 School Discovery
 **Status:** ✅ Production - Live at https://bgslab.github.io/josephs-path-glory
 
 ---
@@ -58,6 +58,7 @@ The AI analysis is specifically tuned to:
 ├── wrangler.toml                       # Cloudflare Worker config
 ├── README.md                           # Project documentation
 ├── CONTEXT.md                          # This file - project context
+├── CLOUDFLARE_SETUP.md                 # API key setup guide (Worker secrets) ⭐ NEW
 ├── FIRESTORE_SETUP_INSTRUCTIONS.md     # Firebase setup guide
 ├── V1.1_DEPLOYMENT_SUMMARY.md          # v1.1 release notes
 ├── firestore-security-rules-v4-working.txt  # Production security rules
@@ -66,12 +67,13 @@ The AI analysis is specifically tuned to:
 
 ### Key App Modules (within index.html)
 ```javascript
-App.Auth          // Lines 1177-1196 - Google authentication
-App.Team          // Lines 1198-1321 - Team collaboration
-App.Storage       // Lines 1379-1513 - localStorage operations
-App.CloudSync     // Lines 1517-1659 - Firebase Firestore sync
-App.API           // Lines 1661-2234 - Claude AI research + scoring
-App.UI            // Lines 2242-3257 - View management & rendering
+App.Auth          // Lines 1279-1356 - Google authentication
+App.Team          // Lines 1358-1481 - Team collaboration
+App.Storage       // Lines 1485-1623 - localStorage operations
+App.CloudSync     // Lines 1627-1794 - Firebase Firestore sync
+App.API           // Lines 1796-2335 - Claude AI research + scoring
+App.Discover      // Lines 2337-2667 - AI school discovery (NEW v1.2)
+App.UI            // Lines 2669-3696 - View management & rendering
 ```
 
 ### External Services
@@ -85,7 +87,7 @@ App.UI            // Lines 2242-3257 - View management & rendering
 
 ---
 
-## 🎯 CURRENT FEATURES (v1.1)
+## 🎯 CURRENT FEATURES (v1.2)
 
 ### Phase 1: Core Database & Dashboard
 - **School Tracker** - Manage 50+ schools with complete CRUD operations
@@ -116,13 +118,23 @@ App.UI            // Lines 2242-3257 - View management & rendering
 - **Auto-Migration** - First sign-in uploads all local schools to cloud
 - **Cost:** $0/month (Firebase free tier)
 
-### Phase 3.5: Team Collaboration ✨ NEW (v1.1)
+### Phase 3.5: Team Collaboration
 - **Shared Team Workspace** - John, Joseph, Mom, and Coach all see the same schools
 - **Individual Google Accounts** - Everyone signs in with their own Google account
 - **Contributor Attribution** - Each school shows "Added by [Name]" for transparency
 - **Filter by Contributor** - View only schools added by specific team members
 - **Team Management** - Create team or join existing team with Team ID
 - **Real-Time Team Sync** - Changes from any team member appear instantly for everyone
+
+### Phase 4: School Discovery (AI Reverse Lookup) ✨ NEW (v1.2)
+- **Smart Filters** - Search by level (JUCO/D1/D2/D3/NAIA), state, conference, minimum score
+- **AI-Powered Discovery** - Claude analyzes and ranks top 10 schools matching Joseph's profile
+- **Stack-Ranked Results** - Schools displayed 1-10 with overall scores and reasoning
+- **5-Dimension Preview** - See all scores (Playing Time, Position Dev, Transfer, Coaching, Academic) at a glance
+- **Quick Actions** - "Full Research" button triggers comprehensive analysis, "Quick Add" saves to tracker
+- **Already Tracked Badge** - Shows ✓ for schools already in your list
+- **Same Scoring Logic** - Uses identical 5-dimension criteria and weights as individual research
+- **Cost-Efficient** - ~$0.05 per discovery search (~3,000 tokens output vs ~1,500 for individual school)
 
 ---
 
@@ -880,6 +892,25 @@ User wanted team collaboration, but app was built for user isolation:
 - Created deployment summary document
 - Tagged release as v1.1
 
+**Part 4: Documentation Corrections** (Commit `11035d5`)
+- Fixed judgmental financial language in CONTEXT.md and README.md
+- Removed "dealbreaker" and "bankrupt the family" wording
+- Updated to cost-neutral approach: "provides cost data for informed decisions"
+- Enhanced session summary with security rules debugging details
+- Created comprehensive CONTEXT.md (1,800+ lines)
+
+**Part 5: Secure API Key Storage** (Commit `218d4c0`)
+- Moved Claude API key from localStorage to Cloudflare Worker secrets
+- Wife having copy/paste issues entering API key manually
+- Solution: Store in Worker environment (env.CLAUDE_API_KEY)
+- Updated Worker to use stored secret instead of request header
+- Updated frontend to remove API key input field and validation
+- Settings now shows "✅ AI Research Ready" message
+- No manual entry needed - family just clicks "Research with AI"
+- Created CLOUDFLARE_SETUP.md with full instructions
+- Security: API key never exposed in browser/code/GitHub
+- Cost: John pays for all usage (~$0.01 per school research)
+
 ### Bugs Fixed
 1. **Firestore permission errors:**
    - Initial complex rules with `isTeamMember()` helper function failed
@@ -890,9 +921,14 @@ User wanted team collaboration, but app was built for user isolation:
    - Files created: firestore-security-rules-v4-working.txt
 2. **Attribution not showing:** Schools saved before team implementation didn't have createdBy fields
 3. **Financial language:** Removed "dealbreaker" and "bankrupt" language from CONTEXT.md to align with cost-neutral approach
+4. **API key manual entry issues:**
+   - Wife having copy/paste errors entering API key (spaces, typos)
+   - Family members shouldn't need to manage API keys
+   - Solution: Store API key in Cloudflare Worker secrets
+   - Result: No manual entry needed - family just uses the app
 
 ### End Result
-🎉 **Team Collaboration Fully Working!**
+🎉 **Team Collaboration + Secure API Fully Working!**
 - ✅ Multiple users can share one team workspace
 - ✅ Each person signs in with own Google account
 - ✅ All team members see same schools in real-time
@@ -900,6 +936,8 @@ User wanted team collaboration, but app was built for user isolation:
 - ✅ Filter dropdown to view schools by contributor
 - ✅ Team management (create/join with Team ID)
 - ✅ Firestore security rules enforce team membership
+- ✅ API key stored securely in Worker - no manual entry needed
+- ✅ Family just clicks "Research with AI" and it works immediately
 
 ### Key Learnings
 1. Always clarify user expectations upfront (team vs isolated)
@@ -908,6 +946,7 @@ User wanted team collaboration, but app was built for user isolation:
 4. Use git tags for major version releases
 5. Document breaking changes clearly (v1.0 → v1.1 migration)
 6. **Financial analysis must be cost-neutral** - Present data without making affordability judgments; let family decide what's affordable
+7. **API keys should be in Worker secrets, not user-managed** - Eliminates manual entry errors, improves security, simplifies family onboarding
 
 ---
 
@@ -1037,7 +1076,7 @@ User wanted team collaboration, but app was built for user isolation:
 
 **Endpoint:** https://api.anthropic.com/v1/messages
 
-**Authentication:** User provides own API key (stored in localStorage)
+**Authentication:** API key stored in Cloudflare Worker secrets (no user entry required)
 
 **Configuration:**
 ```javascript
@@ -1059,17 +1098,20 @@ User wanted team collaboration, but app was built for user isolation:
 - ~800 tokens per research request (prompt)
 - ~1500 tokens per response (average)
 - ~2300 tokens total per school research
-- **Cost:** ~$0.01 per school (user pays via own API key)
+- **Cost:** ~$0.01 per school (John pays for all family usage)
+- **For 50 schools:** ~$0.50 total cost
 
 **Rate Limits:**
-- Depends on user's Anthropic tier
+- Depends on John's Anthropic account tier
 - Typically 50 requests/minute for Tier 1
-- No rate limiting implemented in app (user responsible)
+- No rate limiting implemented in app
+- Monitor usage at https://console.anthropic.com/
 
 **Error Handling:**
-- API key invalid → Show error, prompt user to add valid key
+- API key invalid → Worker returns 401 error
 - Rate limit exceeded → Show error, suggest waiting
 - Network error → Show error, retry button
+- Server config error → API key secret not set in Worker
 
 ---
 
