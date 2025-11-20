@@ -2550,7 +2550,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
 
                     // Check if school already in tracker
                     const existingSchool = App.Storage.getSchools().find(s =>
-                        s.name.toLowerCase() === school.school_name.toLowerCase()
+                        s.name && school.school_name && s.name.toLowerCase() === school.school_name.toLowerCase()
                     );
                     const alreadyTracked = existingSchool ? '<span style="color: var(--color-text-muted); font-size: 0.85rem; margin-left: 0.5rem;">✓ In Tracker</span>' : '';
 
