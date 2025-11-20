@@ -37,13 +37,22 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Auto-Migration** - First sign-in uploads all local schools to cloud
 - **Cost:** $0/month (Firebase free tier)
 
-### Phase 3.5: Team Collaboration ✨ NEW
+### Phase 3.5: Team Collaboration
 - **Shared Team Workspace** - John, Joseph, Mom, and Coach all see the same schools
 - **Individual Google Accounts** - Everyone signs in with their own Google account
 - **Contributor Attribution** - Each school shows "Added by [Name]" for transparency
 - **Filter by Contributor** - View only schools added by specific team members
 - **Team Management** - Create team or join existing team with Team ID
 - **Real-Time Team Sync** - Changes from any team member appear instantly for everyone
+
+### Phase 4: School Discovery (AI Reverse Lookup) ✨ NEW
+- **Smart Filters** - Search by level, state, conference, minimum score
+- **AI-Powered Discovery** - Find top 10 schools matching Joseph's profile
+- **Stack-Ranked Results** - Schools ranked 1-10 with scores and reasoning
+- **Quick Preview** - See all 5 dimension scores at a glance
+- **Deep Dive Option** - Click "Full Research" for comprehensive analysis
+- **Quick Add** - Save discovered schools to tracker with one click
+- **Already Tracked Badge** - Shows which schools are already in your list
 
 ## 🚀 Live App
 
@@ -101,12 +110,13 @@ The AI analysis is specifically tuned to:
 
 ## 📝 Roadmap
 
-### ✅ Completed (v1.1)
+### ✅ Completed (v1.2)
 - [x] Phase 1: Core Database & Dashboard
 - [x] Phase 2: AI Research Integration
 - [x] Phase 2.5: Multi-Factor Scoring System
 - [x] Phase 3: Firebase Cloud Sync
 - [x] Phase 3.5: Team Collaboration
+- [x] Phase 4: School Discovery (AI Reverse Lookup)
 
 ### 🔜 Future Enhancements
 - [ ] Enhanced Contact & Action Tracking
@@ -140,8 +150,8 @@ The AI analysis is specifically tuned to:
 ## 🤝 Credits
 
 Built by Claude Code for John Akalaonu
-**Version:** 1.1 Team Collaboration
-**Date:** November 17, 2025
+**Version:** 1.2 School Discovery
+**Date:** November 19, 2025
 **GitHub:** [bgslab/josephs-path-glory](https://github.com/bgslab/josephs-path-glory)
 
 ---

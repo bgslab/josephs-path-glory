@@ -12,10 +12,11 @@
 
     <style>
         /**
-         * Joseph's Path to Glory - v1.1 Team Collaboration
-         * Date: 2025-11-17
+         * Joseph's Path to Glory - v1.2 School Discovery
+         * Date: 2025-11-19
          *
          * Features:
+         * - AI School Discovery (reverse lookup with filters)
          * - Firebase cloud sync (real-time multi-device)
          * - Google Sign-In authentication
          * - AI-powered school research (Claude Sonnet 4)
@@ -699,6 +700,7 @@
         <h1 class="app-title">🏈 Joseph's Path to Glory</h1>
         <div class="desktop-nav">
             <button class="btn btn-secondary nav-btn" data-view="dashboard">Dashboard</button>
+            <button class="btn btn-secondary nav-btn" data-view="discover">🔍 Discover Schools</button>
             <button class="btn btn-secondary nav-btn" data-view="actions">Actions</button>
             <button class="btn btn-secondary nav-btn" data-view="settings">Settings</button>
         </div>
@@ -832,6 +834,110 @@
                 </div>
 
                 <div id="research-results-content">
+                    <!-- Results will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- DISCOVER SCHOOLS VIEW -->
+        <div id="discover-view" class="view">
+            <button class="btn btn-secondary mb-2" onclick="App.UI.showView('dashboard')">← Back to Dashboard</button>
+
+            <h2>🔍 Discover Schools</h2>
+            <p class="text-muted mb-2">Find schools that match Joseph's profile using AI analysis. Filter by level, location, and get top-ranked recommendations.</p>
+
+            <!-- Filter Section -->
+            <div style="background: var(--color-bg-secondary); padding: 1.5rem; border-radius: var(--border-radius); margin-bottom: 1.5rem;">
+                <h3 style="margin-top: 0;">Search Filters</h3>
+
+                <!-- Level Selection -->
+                <div class="form-group">
+                    <label>School Level (select one or more)</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                            <input type="checkbox" id="discover-level-juco" value="JUCO" checked>
+                            <span>JUCO</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                            <input type="checkbox" id="discover-level-d1" value="D1">
+                            <span>D1</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                            <input type="checkbox" id="discover-level-d2" value="D2">
+                            <span>D2</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                            <input type="checkbox" id="discover-level-d3" value="D3">
+                            <span>D3</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                            <input type="checkbox" id="discover-level-naia" value="NAIA">
+                            <span>NAIA</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- State Selection -->
+                <div class="form-group">
+                    <label for="discover-state">State (optional)</label>
+                    <select id="discover-state">
+                        <option value="">Any State</option>
+                        <option value="IL">Illinois</option>
+                        <option value="IA">Iowa</option>
+                        <option value="KS">Kansas</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="MO">Missouri</option>
+                        <option value="WI">Wisconsin</option>
+                        <option value="IN">Indiana</option>
+                        <option value="MN">Minnesota</option>
+                        <option value="MI">Michigan</option>
+                        <option value="OH">Ohio</option>
+                        <option value="SD">South Dakota</option>
+                        <option value="ND">North Dakota</option>
+                    </select>
+                </div>
+
+                <!-- Conference -->
+                <div class="form-group">
+                    <label for="discover-conference">Conference (optional)</label>
+                    <input type="text" id="discover-conference" placeholder="e.g., NJCAA Region 16, Big Ten">
+                    <small class="text-muted">Leave blank to search all conferences</small>
+                </div>
+
+                <!-- Minimum Score -->
+                <div class="form-group">
+                    <label for="discover-min-score">Minimum Overall Score: <span id="discover-score-value">3.0</span>/5</label>
+                    <input type="range" id="discover-min-score" min="2.0" max="4.5" step="0.5" value="3.0"
+                           style="width: 100%;"
+                           oninput="document.getElementById('discover-score-value').textContent = this.value">
+                </div>
+
+                <button class="btn btn-primary btn-block" onclick="App.Discover.findSchools()">
+                    🎯 Find Top 10 Schools
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="discover-loading" class="hidden" style="text-align: center; padding: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+                <p>AI is analyzing schools across the country...</p>
+                <p class="text-muted">This may take 20-40 seconds</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="discover-error" class="hidden" style="background: var(--color-bg-secondary); border: 1px solid var(--color-danger); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1rem;">
+                <h3 style="color: var(--color-danger);">⚠️ Error</h3>
+                <p id="discover-error-message"></p>
+            </div>
+
+            <!-- Results -->
+            <div id="discover-results" class="hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0;">Top Schools for Joseph</h3>
+                    <button class="btn btn-secondary btn-small" onclick="App.Discover.clearResults()">🔄 New Search</button>
+                </div>
+
+                <div id="discover-results-grid" style="display: grid; gap: 1rem;">
                     <!-- Results will be rendered here -->
                 </div>
             </div>
@@ -2226,6 +2332,338 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                             academic: 0.05
                         };
                     }
+                }
+            },
+
+            // ===== DISCOVER MODULE =====
+            Discover: {
+                currentResults: null,
+
+                // Find schools matching criteria
+                async findSchools() {
+                    // Get selected levels
+                    const levels = [];
+                    if (document.getElementById('discover-level-juco').checked) levels.push('JUCO');
+                    if (document.getElementById('discover-level-d1').checked) levels.push('D1');
+                    if (document.getElementById('discover-level-d2').checked) levels.push('D2');
+                    if (document.getElementById('discover-level-d3').checked) levels.push('D3');
+                    if (document.getElementById('discover-level-naia').checked) levels.push('NAIA');
+
+                    if (levels.length === 0) {
+                        alert('Please select at least one school level');
+                        return;
+                    }
+
+                    // Get other filters
+                    const state = document.getElementById('discover-state').value;
+                    const conference = document.getElementById('discover-conference').value.trim();
+                    const minScore = parseFloat(document.getElementById('discover-min-score').value);
+
+                    // Show loading state
+                    document.getElementById('discover-loading').classList.remove('hidden');
+                    document.getElementById('discover-error').classList.add('hidden');
+                    document.getElementById('discover-results').classList.add('hidden');
+
+                    try {
+                        // Build discovery prompt
+                        const prompt = this.buildDiscoveryPrompt(levels, state, conference, minScore);
+
+                        // Call Claude API via Cloudflare Worker proxy
+                        const response = await fetch('https://josephs-path-glory-proxy.dronescout-api.workers.dev', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'anthropic-version': '2023-06-01'
+                            },
+                            body: JSON.stringify({
+                                model: 'claude-sonnet-4-20250514',
+                                max_tokens: 8000,
+                                messages: [{
+                                    role: 'user',
+                                    content: prompt
+                                }]
+                            })
+                        });
+
+                        if (!response.ok) {
+                            const errorBody = await response.text();
+                            console.error('API Error Response:', errorBody);
+                            throw new Error(`API Error: ${response.status} - ${errorBody.substring(0, 200)}`);
+                        }
+
+                        const data = await response.json();
+                        const aiResponse = data.content[0].text;
+
+                        // Parse JSON response
+                        let schoolsData;
+                        try {
+                            schoolsData = JSON.parse(aiResponse);
+                        } catch (e) {
+                            // Try to extract JSON if wrapped in markdown
+                            const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+                            if (jsonMatch) {
+                                schoolsData = JSON.parse(jsonMatch[0]);
+                            } else {
+                                throw new Error('Could not parse AI response as JSON');
+                            }
+                        }
+
+                        // Store results
+                        this.currentResults = schoolsData.schools;
+
+                        // Hide loading, show results
+                        document.getElementById('discover-loading').classList.add('hidden');
+                        this.displayResults(schoolsData.schools);
+
+                    } catch (error) {
+                        console.error('Discovery error:', error);
+                        document.getElementById('discover-loading').classList.add('hidden');
+                        document.getElementById('discover-error').classList.remove('hidden');
+                        document.getElementById('discover-error-message').textContent =
+                            error.message || 'An error occurred during school discovery. Please try again.';
+                    }
+                },
+
+                // Build discovery prompt using same criteria as research
+                buildDiscoveryPrompt(levels, state, conference, minScore) {
+                    const levelsStr = levels.join(', ');
+                    const stateFilter = state ? `\n- Located in: ${state}` : '';
+                    const conferenceFilter = conference ? `\n- Conference: ${conference}` : '';
+
+                    return `You are a college football recruiting analyst with a Chief of Staff mindset. Find and rank the TOP 10 schools that best match Joseph's profile based on the filters provided.
+
+YOUR APPROACH:
+- High-impact brevity - Cut through recruiting hype, focus on facts
+- Skeptical lens - Challenge assumptions, identify red flags early
+- Forward-thinking - Consider Joseph's path 2-4 years out (transfer pipeline, eligibility)
+- Reality-based - No aspirational thinking, only what's likely given his profile
+
+CRITICAL CONTEXT - JOSEPH'S SITUATION:
+- HS senior TE who missed junior season (injury) - LIMITED FILM
+- Mid-to-low 2.X GPA, no standardized test scores - ACADEMIC RISK
+- Position versatility: PRIMARY = Blocking TE/Fullback hybrid, SECONDARY = Pass catching
+- Strengths: In-line blocking, lead blocking, pass protection, physicality
+- Can play: In-line TE, H-back, Fullback, move TE, Y-TE (blocking emphasis)
+- Needs to build more game film for transfer opportunities
+- Two years of eligibility remaining (critical for 4-year vs JUCO decision)
+- Current situation: 1 actual offer (Elmhurst D3), active recruiting interest from Beloit (D3) and Quincy (D2)
+- Top JUCO targets: Coffeyville CC, Iowa Western CC, Hutchinson CC
+
+SEARCH FILTERS:
+- School levels: ${levelsStr}${stateFilter}${conferenceFilter}
+- Minimum overall score: ${minScore}/5
+
+ASSESSMENT PRIORITIES (DO NOT base recommendations on cost):
+1. Playing time likelihood - Can Joseph realistically compete for snaps?
+2. Position development - Track record developing TEs or FBs (specific examples with names/years)
+3. Transfer/advancement pipeline - Where do players go next? (D1 transfers for JUCO, NFL for D1)
+4. Coaching stability - Turnover, tenure, program momentum
+5. Academic fit - GPA requirements, academic support for 2.X GPA student
+
+SCORING REQUIREMENT:
+For each school, provide 1-5 scores (decimals allowed) for each of the 5 assessment priorities above.
+
+BE FACTUAL AND ANALYTICAL:
+- Only recommend schools that genuinely fit Joseph's profile
+- Prioritize JUCO schools with strong transfer pipelines if JUCO is selected
+- For D2/D3/NAIA, prioritize playing time and position development
+- Challenge recruiting narratives with evidence
+- Flag red flags prominently
+
+Provide your response in this EXACT JSON format (DO NOT include markdown code blocks, ONLY raw JSON):
+
+{
+  "search_criteria": {
+    "levels": "${levelsStr}",
+    "state": "${state || 'Any'}",
+    "conference": "${conference || 'Any'}",
+    "min_score": ${minScore}
+  },
+  "schools": [
+    {
+      "rank": 1,
+      "school_name": "Full official name",
+      "level": "JUCO/D1/D2/D3/NAIA",
+      "location": "City, State",
+      "conference": "Conference name",
+      "why_ranked": ["Top 2-3 specific reasons why this school ranked #1"],
+      "scores": {
+        "playing_time": {
+          "value": 4.5,
+          "reasoning": "Brief explanation"
+        },
+        "position_development": {
+          "value": 5.0,
+          "reasoning": "Brief explanation with specific examples"
+        },
+        "transfer_pipeline": {
+          "value": 4.8,
+          "reasoning": "Brief explanation"
+        },
+        "coaching_stability": {
+          "value": 4.2,
+          "reasoning": "Brief explanation"
+        },
+        "academic_fit": {
+          "value": 5.0,
+          "reasoning": "Brief explanation"
+        }
+      },
+      "overall_score": 4.7,
+      "contact_info": {
+        "head_coach": "Name",
+        "recruiting_contact": "Name and role",
+        "phone": "Phone number",
+        "twitter": "@handle"
+      }
+    }
+  ]
+}
+
+Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
+                },
+
+                // Display discovery results
+                displayResults(schools) {
+                    const grid = document.getElementById('discover-results-grid');
+                    grid.innerHTML = '';
+
+                    schools.forEach(school => {
+                        const card = this.createSchoolCard(school);
+                        grid.appendChild(card);
+                    });
+
+                    document.getElementById('discover-results').classList.remove('hidden');
+                },
+
+                // Create individual school card
+                createSchoolCard(school) {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background: var(--color-bg-secondary); padding: 1.5rem; border-radius: var(--border-radius); border: 1px solid var(--color-border);';
+
+                    const overallScore = school.overall_score || App.API.calculateOverallScore(school);
+                    const badge = App.API.getScoreBadge(overallScore);
+
+                    // Check if school already in tracker
+                    const existingSchool = App.Storage.getSchools().find(s =>
+                        s.name.toLowerCase() === school.school_name.toLowerCase()
+                    );
+                    const alreadyTracked = existingSchool ? '<span style="color: var(--color-text-muted); font-size: 0.85rem; margin-left: 0.5rem;">✓ In Tracker</span>' : '';
+
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                    <span style="font-size: 1.2rem; font-weight: 600;">#${school.rank}</span>
+                                    <h3 style="margin: 0; font-size: 1.1rem;">${school.school_name}</h3>
+                                    ${alreadyTracked}
+                                </div>
+                                <div style="color: var(--color-text-secondary); font-size: 0.9rem;">
+                                    ${school.level} • ${school.location} • ${school.conference}
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.5rem;">${badge}</div>
+                                <div style="font-weight: 600; font-size: 1.1rem;">${overallScore.toFixed(1)}/5</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Why This School:</strong>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                                ${school.why_ranked.map(reason => `<li>${reason}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                            ${this.createScorePill('Playing Time', school.scores.playing_time.value)}
+                            ${this.createScorePill('Position Dev', school.scores.position_development.value)}
+                            ${this.createScorePill('Transfer', school.scores.transfer_pipeline.value)}
+                            ${this.createScorePill('Coaching', school.scores.coaching_stability.value)}
+                            ${this.createScorePill('Academic', school.scores.academic_fit.value)}
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-primary btn-small" onclick="App.Discover.researchSchool('${school.school_name.replace(/'/g, "\\'")}')">
+                                🔍 Full Research
+                            </button>
+                            ${!existingSchool ? `
+                                <button class="btn btn-secondary btn-small" onclick="App.Discover.quickAddSchool('${school.school_name.replace(/'/g, "\\'")}')">
+                                    + Quick Add
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+
+                    return card;
+                },
+
+                // Create score pill
+                createScorePill(label, score) {
+                    const badge = App.API.getScoreBadge(score);
+                    return `
+                        <div style="display: flex; align-items: center; gap: 0.3rem; background: var(--color-bg); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                            <span>${badge}</span>
+                            <span style="color: var(--color-text-secondary);">${label}:</span>
+                            <span style="font-weight: 600;">${score.toFixed(1)}</span>
+                        </div>
+                    `;
+                },
+
+                // Research individual school from discovery results
+                async researchSchool(schoolName) {
+                    // Switch to research view
+                    App.UI.showView('research');
+
+                    // Set school name
+                    document.getElementById('research-input').value = schoolName;
+
+                    // Trigger research
+                    await App.API.researchSchool();
+                },
+
+                // Quick add school without full research
+                async quickAddSchool(schoolName) {
+                    const school = this.currentResults.find(s => s.school_name === schoolName);
+                    if (!school) return;
+
+                    const newSchool = {
+                        id: Date.now().toString(),
+                        name: school.school_name,
+                        level: school.level,
+                        location: school.location,
+                        conference: school.conference,
+                        headCoach: school.contact_info?.head_coach || '',
+                        teCoach: '',
+                        recruitingContact: school.contact_info?.recruiting_contact || '',
+                        phone: school.contact_info?.phone || '',
+                        email: '',
+                        twitter: school.contact_info?.twitter || '',
+                        interest: 'medium',
+                        status: 'researching',
+                        rating: 0,
+                        notes: `Discovered via AI Search (Rank #${school.rank})\n\nWhy ranked here:\n${school.why_ranked.join('\n')}`,
+                        contacts: [],
+                        actions: [],
+                        scores: school.scores,
+                        createdAt: new Date().toISOString(),
+                        addedBy: App.Auth.currentUser?.email || 'Unknown'
+                    };
+
+                    // Save to storage
+                    await App.Storage.addSchool(newSchool);
+
+                    alert(`${schoolName} added to tracker!`);
+
+                    // Refresh results to show "In Tracker" badge
+                    this.displayResults(this.currentResults);
+                },
+
+                // Clear results and reset form
+                clearResults() {
+                    this.currentResults = null;
+                    document.getElementById('discover-results').classList.add('hidden');
+                    document.getElementById('discover-error').classList.add('hidden');
                 }
             },
 
