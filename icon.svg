@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0d0d0d"/>
+
+  <defs>
+    <!-- Plate outer rim gradient (darker edge) -->
+    <radialGradient id="plateRim" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="#e8e8e8"/>
+      <stop offset="85%" stop-color="#c0c0c0"/>
+      <stop offset="100%" stop-color="#909090"/>
+    </radialGradient>
+    <!-- Plate inner well (recessed center) -->
+    <radialGradient id="plateWell" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f5f5f5"/>
+      <stop offset="80%" stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#c8c8c8"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Neon glow behind plate -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#39ff14" stroke-width="6" opacity="0.2"/>
+  <circle cx="256" cy="256" r="215" fill="none" stroke="#39ff14" stroke-width="2" opacity="0.4"/>
+
+  <!-- Plate outer rim (the raised edge) -->
+  <circle cx="256" cy="256" r="200" fill="url(#plateRim)"/>
+
+  <!-- Plate rim shadow/depth line -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#888888" stroke-width="3"/>
+
+  <!-- Plate inner well (recessed eating area) -->
+  <circle cx="256" cy="256" r="150" fill="url(#plateWell)"/>
+
+  <!-- Inner well shadow to show depth -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#b0b0b0" stroke-width="4"/>
+  <circle cx="256" cy="256" r="146" fill="none" stroke="#d0d0d0" stroke-width="2"/>
+
+  <!-- Football emoji centered on plate -->
+  <text x="256" y="280" font-size="140" text-anchor="middle" dominant-baseline="middle">🏈</text>
+
+  <!-- Neon lime accent on plate rim -->
+  <circle cx="256" cy="256" r="202" fill="none" stroke="#39ff14" stroke-width="2" opacity="0.6"/>
+</svg>

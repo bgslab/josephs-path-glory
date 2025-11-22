@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joseph's Path to Glory</title>
 
+    <!-- PWA & Icons -->
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#39ff14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Path to Glory">
+    <meta name="description" content="Fill your plate with opportunity - College football recruiting tracker">
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -12,8 +22,8 @@
 
     <style>
         /**
-         * Joseph's Path to Glory - v1.2 School Discovery
-         * Date: 2025-11-19
+         * Joseph's Path to Glory - v1.3 Neon Theme
+         * Date: 2025-11-22
          *
          * Features:
          * - AI School Discovery (reverse lookup with filters)
@@ -32,21 +42,21 @@
          * Dependencies: Firebase SDK (CDN)
          */
 
-        /* ===== CSS VARIABLES (Dark Mode Theme) ===== */
+        /* ===== CSS VARIABLES (Midnight Black + Neon Lime Theme) ===== */
         :root {
-            --color-bg-primary: #0a1628;
-            --color-bg-secondary: #1a2942;
-            --color-bg-tertiary: #2a3a52;
-            --color-accent-primary: #00d4ff;
-            --color-accent-secondary: #ffd700;
+            --color-bg-primary: #0d0d0d;
+            --color-bg-secondary: #1a1a1a;
+            --color-bg-tertiary: #252525;
+            --color-accent-primary: #39ff14;
+            --color-accent-secondary: #00ffff;
             --color-text-primary: #ffffff;
-            --color-text-secondary: #b0c4de;
-            --color-text-muted: #6b7c93;
-            --color-border: #3a4a62;
-            --color-success: #4ade80;
-            --color-warning: #fbbf24;
-            --color-danger: #f87171;
-            --color-info: #60a5fa;
+            --color-text-secondary: #a0a0a0;
+            --color-text-muted: #666666;
+            --color-border: #2a2a2a;
+            --color-success: #39ff14;
+            --color-warning: #ffaa00;
+            --color-danger: #ff073a;
+            --color-info: #00ffff;
 
             --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             --border-radius: 8px;
