@@ -1,6 +1,6 @@
 # Joseph's Path to Glory - Project Context
-**Last Updated:** November 19, 2025
-**Current Version:** v1.2 School Discovery
+**Last Updated:** November 22, 2025
+**Current Version:** v1.4 XOS Theme + Stat Filters
 **Status:** ✅ Production - Live at https://bgslab.github.io/josephs-path-glory
 
 ---
@@ -48,7 +48,7 @@ The AI analysis is specifically tuned to:
 - **Deployment:** GitHub Pages (https://bgslab.github.io/josephs-path-glory)
 - **File Size:** Single ~150KB HTML file (3,224 lines)
 - **Mobile-First:** Optimized for iPhone 480px viewport
-- **Theme:** Dark mode with navy/cyan color scheme
+- **Theme:** XOS Digital professional theme (dark charcoal + red accents)
 
 ### File Structure
 ```
@@ -374,10 +374,57 @@ App.UI            // Lines 2669-3696 - View management & rendering
 - **Branch:** main
 - **Owner:** John Akalaonu (@bgslab)
 
-### v1.1 Team Collaboration (November 17, 2025) ✅ CURRENT
+### v1.4 XOS Theme + Stat Filters (November 22, 2025) ✅ CURRENT
+**Tag:** `v1.4`
+**Commit:** `063c1fd`
+**Status:** Production - Live
+
+**Major Features:**
+- ✨ XOS Digital professional color theme (dark charcoal + red accents)
+- ✨ Plate motif throughout UI ("Fill Your Plate with Opportunity")
+- ✨ Stat card filters (click On Plate/Offers/Priority to filter schools)
+- ✨ PWA icon with plate + football emoji
+
+**UI Changes:**
+- Background: Dark charcoal (#1a1d23) instead of pure black
+- Accent: Red (#e63946) instead of neon lime
+- Header tagline: "Fill Your Plate with Opportunity"
+- Button text: "Add to Plate", "Scout Opportunities"
+- Stats: "On Plate", "Offers", "Priority" - now clickable filters
+
+**Bug Fixes:**
+- Recommendation text now green (was red, looked like warning)
+- AI Overall Score has readable gray background (was red gradient)
+- Plate emoji shows natural colors (not affected by title gradient)
+
+**Key Commits:**
+- `063c1fd` - v1.4: XOS Theme + Stat Filters + Plate Motif
+- `9619e32` - v1.3 Neon Theme + Plate Icon (superseded)
+
+---
+
+### v1.2 School Discovery (November 19, 2025)
+**Tag:** `v1.2`
+**Commit:** `ee34f31`
+**Status:** Superseded by v1.4
+
+**Major Features:**
+- ✨ AI School Discovery (reverse lookup) - Find top 10 schools matching profile
+- ✨ Smart filters: Level, State, Conference, Minimum Score
+- ✨ Quick Add to tracker from discovery results
+- ✨ "Already Tracked" badge for existing schools
+
+**Key Commits:**
+- `ee34f31` - Docs: Update CONTEXT.md for v1.2 release
+- `fcc46ae` - Fix: TypeError in createSchoolCard
+- `858849a` - Fix: Add Discover Schools to mobile navigation
+
+---
+
+### v1.1 Team Collaboration (November 17, 2025)
 **Tag:** `v1.1`
 **Commit:** `0260b55`
-**Status:** Production - Live
+**Status:** Superseded by v1.2
 
 **Major Features:**
 - ✨ Shared team workspace with individual Google accounts
@@ -843,10 +890,10 @@ git push origin v1.2
 
 ---
 
-## 📋 SESSION SUMMARY (November 17, 2025)
+## 📋 SESSION SUMMARY (November 22, 2025)
 
 ### Session Goal
-Implement team collaboration feature for v1.1 release
+Implement XOS theme, plate motif, and stat card filters for v1.4 release
 
 ### Starting State
 - Version: v1.0 Production
@@ -927,6 +974,22 @@ User wanted team collaboration, but app was built for user isolation:
 - Fixed TypeError when checking if school already tracked (undefined name)
 - Tagged release as v1.2
 
+**Part 7: v1.4 - XOS Theme + Stat Filters** (Commit `063c1fd`) ⭐ v1.4
+- **Theme Overhaul:** Replaced neon lime/cyan with XOS Digital professional palette
+- Color scheme: Dark charcoal (#1a1d23) + red accents (#e63946)
+- Updated manifest.json and meta tags for PWA theming
+- **Plate Motif:** "Fill Your Plate with Opportunity" concept throughout UI
+- Header tagline, button text ("Add to Plate"), stats labels
+- PWA icon: Dinner plate with football emoji on charcoal background
+- **Stat Card Filters:** On Plate/Offers/Priority stats now clickable
+- Clicking filters the school list (all, offers only, high interest only)
+- Active state with red border and subtle glow effect
+- **Bug Fixes:**
+  - Recommendation text changed from red to green (was misleading)
+  - AI Overall Score background changed to neutral gray (was unreadable red)
+  - Plate emoji separated from title gradient (now shows natural colors)
+- Tagged release as v1.4
+
 ### Bugs Fixed
 1. **Firestore permission errors:**
    - Initial complex rules with `isTeamMember()` helper function failed
@@ -954,21 +1017,17 @@ User wanted team collaboration, but app was built for user isolation:
    - Result: School discovery works without JavaScript errors
 
 ### End Result
-🎉 **v1.2 - Team Collaboration + AI Discovery Fully Working!**
+🎉 **v1.4 - Professional Theme + Stat Filters Fully Working!**
+- ✅ XOS Digital professional color scheme (dark charcoal + red)
+- ✅ Plate motif throughout UI ("Fill Your Plate with Opportunity")
+- ✅ Stat cards are clickable filters (On Plate / Offers / Priority)
+- ✅ PWA icon with plate + football emoji
 - ✅ Multiple users can share one team workspace
 - ✅ Each person signs in with own Google account
 - ✅ All team members see same schools in real-time
 - ✅ Schools show "Added by [Name]" attribution
-- ✅ Filter dropdown to view schools by contributor
-- ✅ Team management (create/join with Team ID)
-- ✅ Firestore security rules enforce team membership
+- ✅ AI School Discovery - Find top 10 schools matching profile
 - ✅ API key stored securely in Worker - no manual entry needed
-- ✅ Family just clicks "Research with AI" and it works immediately
-- ✅ **NEW: AI School Discovery** - Find top 10 schools matching Joseph's profile
-- ✅ **NEW: Smart Filters** - Filter by level, state, conference, min score
-- ✅ **NEW: Mobile Navigation** - Discover tab accessible on phones
-- ✅ **NEW: Quick Add** - Save discovered schools to tracker in one click
-- ⚠️ **Note:** 529 API overload errors from Anthropic are temporary (high traffic)
 
 ### Key Learnings
 1. Always clarify user expectations upfront (team vs isolated)
@@ -1461,6 +1520,23 @@ db.collection('schools').get().then(snap => snap.forEach(doc => console.log(doc.
 
 ## 🏷️ CHANGELOG
 
+### v1.4 (November 22, 2025)
+- ✨ NEW: XOS Digital professional theme (dark charcoal + red accents)
+- ✨ NEW: Plate motif throughout UI ("Fill Your Plate with Opportunity")
+- ✨ NEW: Stat card filters (click On Plate/Offers/Priority to filter)
+- ✨ NEW: PWA icon with plate + football emoji
+- 🐛 FIX: Recommendation text now green (was red, looked like warning)
+- 🐛 FIX: AI Score background now readable gray (was red gradient)
+- 🐛 FIX: Plate emoji shows natural colors in header
+
+### v1.2 (November 19, 2025)
+- ✨ NEW: AI School Discovery (reverse lookup for matching schools)
+- ✨ NEW: Smart filters (level, state, conference, min score)
+- ✨ NEW: Quick Add to tracker from discovery results
+- ✨ NEW: "Already Tracked" badge for existing schools
+- 🐛 FIX: Mobile navigation now includes Discover tab
+- 🐛 FIX: TypeError in school card when name is undefined
+
 ### v1.1 (November 17, 2025)
 - ✨ NEW: Team collaboration with shared workspace
 - ✨ NEW: Individual Google accounts for team members
@@ -1502,9 +1578,9 @@ db.collection('schools').get().then(snap => snap.forEach(doc => console.log(doc.
 
 ---
 
-**Last Updated:** November 17, 2025
-**Current Version:** v1.1 Team Collaboration
-**Next Version:** v1.2 (Enhanced Tracking - TBD)
+**Last Updated:** November 22, 2025
+**Current Version:** v1.4 XOS Theme + Stat Filters
+**Next Version:** v1.5 (Enhanced Tracking - TBD)
 
 ---
 
