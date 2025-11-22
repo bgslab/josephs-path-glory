@@ -4,8 +4,8 @@
   "description": "Fill your plate with opportunity - College football recruiting tracker",
   "start_url": "/josephs-path-glory/",
   "display": "standalone",
-  "background_color": "#0d0d0d",
-  "theme_color": "#39ff14",
+  "background_color": "#1a1d23",
+  "theme_color": "#e63946",
   "orientation": "portrait-primary",
   "icons": [
     {

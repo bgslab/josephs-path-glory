@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#39ff14">
+    <meta name="theme-color" content="#e63946">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Path to Glory">
@@ -22,7 +22,7 @@
 
     <style>
         /**
-         * Joseph's Path to Glory - v1.3 Neon Theme
+         * Joseph's Path to Glory - v1.3 XOS Theme
          * Date: 2025-11-22
          *
          * Features:
@@ -36,27 +36,27 @@
          * - Offline support with auto-sync
          * - Export/Import backup
          * - Mobile-first responsive design
-         * - Dark mode theme
+         * - Dark mode theme (XOS Digital style)
          *
          * UTF-8 Encoding: Yes (emojis: 🏈📊💰)
          * Dependencies: Firebase SDK (CDN)
          */
 
-        /* ===== CSS VARIABLES (Midnight Black + Neon Lime Theme) ===== */
+        /* ===== CSS VARIABLES (XOS Digital Professional Theme) ===== */
         :root {
-            --color-bg-primary: #0d0d0d;
-            --color-bg-secondary: #1a1a1a;
-            --color-bg-tertiary: #252525;
-            --color-accent-primary: #39ff14;
-            --color-accent-secondary: #00ffff;
+            --color-bg-primary: #1a1d23;
+            --color-bg-secondary: #252a33;
+            --color-bg-tertiary: #2f3640;
+            --color-accent-primary: #e63946;
+            --color-accent-secondary: #ff6b6b;
             --color-text-primary: #ffffff;
             --color-text-secondary: #a0a0a0;
-            --color-text-muted: #666666;
-            --color-border: #2a2a2a;
-            --color-success: #39ff14;
-            --color-warning: #ffaa00;
-            --color-danger: #ff073a;
-            --color-info: #00ffff;
+            --color-text-muted: #6c7a89;
+            --color-border: #3d4450;
+            --color-success: #2ecc71;
+            --color-warning: #f39c12;
+            --color-danger: #e63946;
+            --color-info: #3498db;
 
             --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             --border-radius: 8px;
@@ -121,13 +121,24 @@
             margin-bottom: 1rem;
         }
 
+        .app-branding {
+            text-align: center;
+        }
+
         .app-title {
             font-size: 1.5rem;
-            text-align: center;
+            margin: 0;
             background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .app-tagline {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin: 0.25rem 0 0 0;
+            font-style: italic;
         }
 
         /* ===== BUTTONS ===== */
@@ -247,17 +258,19 @@
 
         .school-card {
             background: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: var(--border-radius);
+            border: 2px solid var(--color-border);
+            border-radius: 16px;
             padding: 1rem;
             cursor: pointer;
             transition: var(--transition);
+            /* Plate-rim effect */
+            box-shadow: inset 0 0 0 3px var(--color-bg-tertiary);
         }
 
         .school-card:hover {
             border-color: var(--color-accent-primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+            box-shadow: inset 0 0 0 3px var(--color-bg-tertiary), 0 4px 12px rgba(57, 255, 20, 0.3);
         }
 
         .school-card-header {
@@ -371,10 +384,23 @@
 
         .stat-card {
             background: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
+            border: 2px solid var(--color-border);
             border-radius: var(--border-radius);
             padding: 0.75rem;
             text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--color-accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .stat-card.active {
+            border-color: var(--color-accent-primary);
+            background: var(--color-bg-tertiary);
+            box-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
         }
 
         .stat-value {
@@ -707,7 +733,10 @@
 <body>
     <!-- App Header -->
     <div class="app-header">
-        <h1 class="app-title">🏈 Joseph's Path to Glory</h1>
+        <div class="app-branding">
+            <h1 class="app-title"><span style="-webkit-text-fill-color: initial; background: none;">🍽️</span> Joseph's Path to Glory</h1>
+            <p class="app-tagline">Fill Your Plate with Opportunity</p>
+        </div>
         <div class="desktop-nav">
             <button class="btn btn-secondary nav-btn" data-view="dashboard">Dashboard</button>
             <button class="btn btn-secondary nav-btn" data-view="discover">🔍 Discover Schools</button>
@@ -728,23 +757,23 @@
         <!-- DASHBOARD VIEW -->
         <div id="dashboard-view" class="view active">
             <div class="btn-group">
-                <button class="btn btn-primary" onclick="App.UI.showAddSchoolModal()">+ Add School</button>
-                <button class="btn btn-secondary" onclick="App.UI.showView('research')">🤖 Research with AI</button>
+                <button class="btn btn-primary" onclick="App.UI.showAddSchoolModal()">🍽️ Add to Plate</button>
+                <button class="btn btn-secondary" onclick="App.UI.showView('research')">🔍 Scout Opportunities</button>
             </div>
 
-            <!-- Stats -->
+            <!-- Stats (clickable filters) -->
             <div class="stats">
-                <div class="stat-card">
+                <div class="stat-card active" data-stat-filter="all" onclick="App.UI.setStatFilter('all')">
                     <div class="stat-value" id="stat-total">0</div>
-                    <div class="stat-label">Schools</div>
+                    <div class="stat-label">🍽️ On Plate</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" data-stat-filter="offers" onclick="App.UI.setStatFilter('offers')">
                     <div class="stat-value" id="stat-offers">0</div>
-                    <div class="stat-label">Offers</div>
+                    <div class="stat-label">🏈 Offers</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" data-stat-filter="priority" onclick="App.UI.setStatFilter('priority')">
                     <div class="stat-value" id="stat-priority">0</div>
-                    <div class="stat-label">Priority</div>
+                    <div class="stat-label">⭐ Priority</div>
                 </div>
             </div>
 
@@ -799,9 +828,10 @@
 
             <!-- Empty State -->
             <div id="empty-state" class="empty-state hidden">
-                <div class="empty-icon">🏈</div>
-                <div class="empty-message">No schools in your tracker yet</div>
-                <button class="btn btn-primary" onclick="App.UI.showAddSchoolModal()">Add Your First School</button>
+                <div class="empty-icon">🍽️</div>
+                <div class="empty-message">Your plate is empty!</div>
+                <p class="text-muted" style="margin-bottom: 1rem;">Start adding schools to fill it with opportunity</p>
+                <button class="btn btn-primary" onclick="App.UI.showAddSchoolModal()">🍽️ Add First School to Plate</button>
             </div>
         </div>
 
@@ -2012,7 +2042,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                             <h2>${data.school_name}</h2>
                             <p><span class="school-badge badge-${data.level?.toLowerCase() || 'juco'}">${data.level}</span> ${data.location}</p>
                             <p><strong>Conference:</strong> ${data.conference || 'N/A'}</p>
-                            ${data.recommendation ? `<p style="color: var(--color-accent-secondary); font-weight: 700; font-size: 1.1rem;">📋 Recommendation: ${data.recommendation}</p>` : ''}
+                            ${data.recommendation ? `<p style="color: var(--color-success); font-weight: 700; font-size: 1.1rem;">📋 Recommendation: ${data.recommendation}</p>` : ''}
                         </div>
 
                         <div style="display: grid; gap: 1.5rem;">
@@ -2686,6 +2716,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                 currentView: 'dashboard',
                 currentFilter: 'all',
                 currentContributorFilter: 'all',
+                currentStatFilter: 'all',
                 currentSort: 'interest',
                 searchQuery: '',
                 editingSchoolId: null,
@@ -2758,6 +2789,19 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                     }
                 },
 
+                // Set stat filter (On Plate / Offers / Priority)
+                setStatFilter(filter) {
+                    this.currentStatFilter = filter;
+
+                    // Update active state on stat cards
+                    document.querySelectorAll('.stat-card').forEach(card => {
+                        card.classList.toggle('active', card.dataset.statFilter === filter);
+                    });
+
+                    // Re-render schools with filter
+                    this.renderSchools();
+                },
+
                 // Render dashboard
                 renderDashboard() {
                     this.renderStats();
@@ -2792,6 +2836,15 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                     // Filter by contributor
                     if (this.currentContributorFilter !== 'all') {
                         schools = schools.filter(s => s.createdBy === this.currentContributorFilter);
+                    }
+
+                    // Filter by stat category (offers / priority)
+                    if (this.currentStatFilter === 'offers') {
+                        schools = schools.filter(s =>
+                            s.offerStatus === 'Verbal Offer' || s.offerStatus === 'Official Offer'
+                        );
+                    } else if (this.currentStatFilter === 'priority') {
+                        schools = schools.filter(s => s.ourInterestLevel === 'High');
                     }
 
                     // Search
@@ -3176,7 +3229,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         <p><strong>Offer Status:</strong> ${school.offerStatus || 'None'}</p>
 
                         ${school.aiAnalysis?.scores ? `
-                            <div class="overall-rating mt-2" style="background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary)); margin-bottom: 1rem;">
+                            <div class="overall-rating mt-2" style="background: var(--color-bg-tertiary); border: 2px solid var(--color-border); margin-bottom: 1rem;">
                                 <div class="value">${(() => {
                                     const score = App.API.calculateOverallScore({ level: school.level, scores: school.aiAnalysis.scores });
                                     return `${App.API.getScoreBadge(score)} ${score.toFixed(1)}`;
