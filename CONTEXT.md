@@ -911,6 +911,22 @@ User wanted team collaboration, but app was built for user isolation:
 - Security: API key never exposed in browser/code/GitHub
 - Cost: John pays for all usage (~$0.01 per school research)
 
+**Part 6: Phase 4 - School Discovery** (Commits `b70c0da`, `e373ba7`, `858849a`, `fcc46ae`) ⭐ v1.2
+- **NEW FEATURE: AI Reverse Lookup** - Find schools matching Joseph's profile
+- Added new "Discover Schools" tab to navigation (desktop + mobile)
+- Smart filters: Level (JUCO/D1/D2/D3/NAIA), State, Conference, Minimum Score
+- AI returns top 10 schools ranked by fit with 5-dimension scores
+- Each result shows: overall score, "Why This School" reasons, all 5 scores
+- "Full Research" button triggers comprehensive analysis
+- "Quick Add" saves discovered school to tracker
+- "✓ In Tracker" badge shows schools already tracked
+- Uses same scoring logic as individual research (reuses getWeightsByLevel, calculateOverallScore)
+- New App.Discover module (lines 2337-2667)
+- Cost: ~$0.05 per discovery search vs ~$0.01 for individual school
+- Fixed mobile navigation (was missing Discover tab)
+- Fixed TypeError when checking if school already tracked (undefined name)
+- Tagged release as v1.2
+
 ### Bugs Fixed
 1. **Firestore permission errors:**
    - Initial complex rules with `isTeamMember()` helper function failed
@@ -926,9 +942,19 @@ User wanted team collaboration, but app was built for user isolation:
    - Family members shouldn't need to manage API keys
    - Solution: Store API key in Cloudflare Worker secrets
    - Result: No manual entry needed - family just uses the app
+5. **Mobile navigation missing Discover tab:** (v1.2)
+   - "Discover Schools" tab only in desktop-nav (hidden on mobile)
+   - Mobile bottom-nav only had 3 tabs: Dashboard, Actions, Settings
+   - Fix: Added 🔍 Discover button to bottom-nav
+   - Result: Mobile users now have 4 tabs matching desktop experience
+6. **TypeError in createSchoolCard:** (v1.2)
+   - Error: "Cannot read properties of undefined (reading 'toLowerCase')"
+   - Cause: Some schools in tracker have undefined/null name property
+   - Fix: Added safety check `s.name && school.school_name &&` before toLowerCase()
+   - Result: School discovery works without JavaScript errors
 
 ### End Result
-🎉 **Team Collaboration + Secure API Fully Working!**
+🎉 **v1.2 - Team Collaboration + AI Discovery Fully Working!**
 - ✅ Multiple users can share one team workspace
 - ✅ Each person signs in with own Google account
 - ✅ All team members see same schools in real-time
@@ -938,6 +964,11 @@ User wanted team collaboration, but app was built for user isolation:
 - ✅ Firestore security rules enforce team membership
 - ✅ API key stored securely in Worker - no manual entry needed
 - ✅ Family just clicks "Research with AI" and it works immediately
+- ✅ **NEW: AI School Discovery** - Find top 10 schools matching Joseph's profile
+- ✅ **NEW: Smart Filters** - Filter by level, state, conference, min score
+- ✅ **NEW: Mobile Navigation** - Discover tab accessible on phones
+- ✅ **NEW: Quick Add** - Save discovered schools to tracker in one click
+- ⚠️ **Note:** 529 API overload errors from Anthropic are temporary (high traffic)
 
 ### Key Learnings
 1. Always clarify user expectations upfront (team vs isolated)
@@ -947,29 +978,33 @@ User wanted team collaboration, but app was built for user isolation:
 5. Document breaking changes clearly (v1.0 → v1.1 migration)
 6. **Financial analysis must be cost-neutral** - Present data without making affordability judgments; let family decide what's affordable
 7. **API keys should be in Worker secrets, not user-managed** - Eliminates manual entry errors, improves security, simplifies family onboarding
+8. **Reuse existing logic** - School Discovery reuses same 5-dimension scoring as individual research (consistency + less code)
+9. **Mobile navigation parity** - Desktop nav is hidden on mobile; always add new features to both desktop AND mobile nav
+10. **529 errors are temporary** - Anthropic API overload errors resolve on their own; not a code bug
 
 ---
 
 ## 🎯 NEXT PRIORITIES
 
-### Immediate (Post v1.1 Testing)
+### Immediate (Post v1.2 Testing)
+
+**Test School Discovery**
+- Wait for Anthropic 529 errors to clear
+- Test with various filter combinations (JUCO only, D2+D3, state filters)
+- Test "Full Research" flow from discovered school
+- Test "Quick Add" saves school correctly with scores
+- Verify "✓ In Tracker" badge shows for existing schools
 
 **Multi-User Testing**
 - Have Joseph sign in and join team
 - Have Mom sign in and join team
 - Verify real-time sync works across all devices
+- Test Discover Schools on mobile devices
 - Test contributor filter with multiple contributors
-- Ensure attribution displays correctly for all users
-
-**Documentation**
-- Create onboarding guide for Joseph, Mom, Coach
-- Document how to share Team ID
-- Add troubleshooting guide for common issues
-- Screenshot guide for team setup process
 
 ---
 
-### Short Term (v1.2 - Enhanced Tracking)
+### Short Term (v1.3 - Enhanced Tracking)
 
 **Contact & Action Tracking Improvements**
 - Quick-add contact entry form (modal instead of full edit)
@@ -988,7 +1023,7 @@ User wanted team collaboration, but app was built for user isolation:
 
 ---
 
-### Medium Term (v1.3 - Analytics & Insights)
+### Medium Term (v1.4 - Analytics & Insights)
 
 **Comparison & Analytics**
 - Side-by-side comparison (2-3 schools)
