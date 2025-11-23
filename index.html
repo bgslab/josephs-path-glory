@@ -3673,7 +3673,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                             ` : ''}
                         ` : ''}
 
-                        ${school.ratings ? `
+                        ${school.ratings && school.ratings.overall > 0 ? `
                             <div class="overall-rating mt-2">
                                 <div class="value">${school.ratings.overall.toFixed(1)}</div>
                                 <div class="label">Manual Rating</div>
@@ -3681,23 +3681,23 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                             <div class="rating-group">
                                 <div class="rating-row">
                                     <span class="rating-label">Coaching:</span>
-                                    <span>${'⭐'.repeat(school.ratings.coach || 0)}</span>
+                                    <span>${school.ratings.coach ? '⭐'.repeat(school.ratings.coach) : '<span class="text-muted">Not rated</span>'}</span>
                                 </div>
                                 <div class="rating-row">
                                     <span class="rating-label">Program Fit:</span>
-                                    <span>${'⭐'.repeat(school.ratings.programFit || 0)}</span>
+                                    <span>${school.ratings.programFit ? '⭐'.repeat(school.ratings.programFit) : '<span class="text-muted">Not rated</span>'}</span>
                                 </div>
                                 <div class="rating-row">
                                     <span class="rating-label">Financial:</span>
-                                    <span>${'⭐'.repeat(school.ratings.financial || 0)}</span>
+                                    <span>${school.ratings.financial ? '⭐'.repeat(school.ratings.financial) : '<span class="text-muted">Not rated</span>'}</span>
                                 </div>
                                 <div class="rating-row">
                                     <span class="rating-label">Academic:</span>
-                                    <span>${'⭐'.repeat(school.ratings.academic || 0)}</span>
+                                    <span>${school.ratings.academic ? '⭐'.repeat(school.ratings.academic) : '<span class="text-muted">Not rated</span>'}</span>
                                 </div>
                                 <div class="rating-row">
                                     <span class="rating-label">Location:</span>
-                                    <span>${'⭐'.repeat(school.ratings.location || 0)}</span>
+                                    <span>${school.ratings.location ? '⭐'.repeat(school.ratings.location) : '<span class="text-muted">Not rated</span>'}</span>
                                 </div>
                             </div>
                         ` : !school.aiAnalysis?.scores ? '<p class="text-muted">No ratings yet. Edit school to add ratings or use AI Research.</p>' : ''}
