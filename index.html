@@ -2291,8 +2291,8 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
   "te_development": "Track record developing TEs - specific examples with names/years",
   "transfer_pipeline": "Where players transfer to (for JUCO) or quality of incoming transfers (for 4-year)",
   "scholarship_potential": "None (D3)/Limited/Moderate/Strong - with explanation specific to Joseph's profile",
-  "red_flags": ["List of specific concerns for Joseph's situation"],
-  "opportunities": ["List of specific positive factors for Joseph"],
+  "red_flags": ["List of specific concerns for Joseph's situation - do NOT include driving distance/time as a red flag, that is informational only"],
+  "opportunities": ["List of specific positive factors for Joseph - do NOT include driving distance/time as an opportunity, that is informational only"],
   "financial_comparison": "Objective cost analysis with ROI: total cost vs scholarship potential vs transfer pipeline vs playing time opportunities. Compare to other levels (e.g., JUCO $16k, D2 $64k with scholarship, D3 $168k). Neutral tone - NO affordability judgments, NO 'financially prohibitive' language.",
   "position_fit": {
     "tight_end": {
@@ -3970,35 +3970,45 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                                 </div>
                             ` : ''}
 
-                            <h3>Program Analysis</h3>
-                            ${ai.recentRecord ? `<p><strong>Recent Record:</strong> ${ai.recentRecord}</p>` : ''}
-                            ${ai.programMomentum ? `<p><strong>Momentum:</strong> ${ai.programMomentum}</p>` : ''}
-                            ${ai.teDevelopment ? `<p><strong>TE Development:</strong> ${ai.teDevelopment}</p>` : ''}
-                            ${ai.transferPipeline ? `<p><strong>Transfer Pipeline:</strong> ${ai.transferPipeline}</p>` : ''}
+                            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
+                                <h3 style="margin-top: 0; margin-bottom: 1rem;">📋 Program Analysis</h3>
+                                ${ai.recentRecord ? `<p style="margin-bottom: 0.75rem;"><strong>Recent Record:</strong> ${ai.recentRecord}</p>` : ''}
+                                ${ai.programMomentum ? `<p style="margin-bottom: 0.75rem;"><strong>Momentum:</strong> ${ai.programMomentum}</p>` : ''}
+                                ${ai.teDevelopment ? `<p style="margin-bottom: 0.75rem;"><strong>TE Development:</strong> ${ai.teDevelopment}</p>` : ''}
+                                ${ai.transferPipeline ? `<p style="margin-bottom: 0;"><strong>Transfer Pipeline:</strong> ${ai.transferPipeline}</p>` : ''}
+                            </div>
 
-                            <h3 class="mt-2">Financial</h3>
-                            ${ai.tuitionCost ? `<p><strong>Annual Cost:</strong> ${ai.tuitionCost}</p>` : ''}
-                            ${ai.fourYearCost ? `<p><strong>Total Cost:</strong> ${ai.fourYearCost}</p>` : ''}
-                            ${ai.scholarshipPotential ? `<p><strong>Scholarship Potential:</strong> ${ai.scholarshipPotential}</p>` : ''}
-                            ${ai.financialComparison ? `<p><strong>Cost Comparison:</strong> ${ai.financialComparison}</p>` : ''}
+                            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
+                                <h3 style="margin-top: 0; margin-bottom: 1rem;">💰 Financial Overview</h3>
+                                ${ai.tuitionCost ? `<p style="margin-bottom: 0.75rem;"><strong>Annual Cost:</strong> ${ai.tuitionCost}</p>` : ''}
+                                ${ai.fourYearCost ? `<p style="margin-bottom: 0.75rem;"><strong>Total Cost:</strong> ${ai.fourYearCost}</p>` : ''}
+                                ${ai.scholarshipPotential ? `<p style="margin-bottom: 0.75rem;"><strong>Scholarship Potential:</strong> ${ai.scholarshipPotential}</p>` : ''}
+                                ${ai.financialComparison ? `<p style="margin-bottom: 0;"><strong>Cost Comparison:</strong> ${ai.financialComparison}</p>` : ''}
+                            </div>
 
                             ${ai.redFlags && ai.redFlags.length > 0 ? `
-                                <h3 class="mt-2">⚠️ Red Flags</h3>
-                                <ul>
-                                    ${ai.redFlags.map(f => `<li>${f}</li>`).join('')}
-                                </ul>
+                                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
+                                    <h3 style="margin-top: 0; margin-bottom: 0.75rem;">⚠️ Red Flags</h3>
+                                    <ul style="margin: 0; padding-left: 1.25rem;">
+                                        ${ai.redFlags.map(f => `<li style="margin-bottom: 0.5rem;">${f}</li>`).join('')}
+                                    </ul>
+                                </div>
                             ` : ''}
 
                             ${ai.opportunities && ai.opportunities.length > 0 ? `
-                                <h3 class="mt-2">✅ Opportunities</h3>
-                                <ul>
-                                    ${ai.opportunities.map(o => `<li>${o}</li>`).join('')}
-                                </ul>
+                                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
+                                    <h3 style="margin-top: 0; margin-bottom: 0.75rem;">✅ Opportunities</h3>
+                                    <ul style="margin: 0; padding-left: 1.25rem;">
+                                        ${ai.opportunities.map(o => `<li style="margin-bottom: 0.5rem;">${o}</li>`).join('')}
+                                    </ul>
+                                </div>
                             ` : ''}
 
                             ${ai.comparisonToJuco ? `
-                                <h3 class="mt-2">vs JUCO Option</h3>
-                                <p>${ai.comparisonToJuco}</p>
+                                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
+                                    <h3 style="margin-top: 0; margin-bottom: 0.75rem;">🔄 vs JUCO Option</h3>
+                                    <p style="margin: 0;">${ai.comparisonToJuco}</p>
+                                </div>
                             ` : ''}
 
                             ${(ai.contactScriptTwitter || ai.contactScriptEmail) ? `
