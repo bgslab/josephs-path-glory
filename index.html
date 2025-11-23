@@ -22,10 +22,12 @@
 
     <style>
         /**
-         * Joseph's Path to Glory - v1.3 XOS Theme
+         * Joseph's Path to Glory - v1.5 Team Info + Overdue Actions
          * Date: 2025-11-22
          *
          * Features:
+         * - Team ID display in Settings (for onboarding new members)
+         * - Overdue action highlights with visual indicators
          * - AI School Discovery (reverse lookup with filters)
          * - Firebase cloud sync (real-time multi-device)
          * - Google Sign-In authentication
@@ -1003,6 +1005,20 @@
         <!-- SETTINGS VIEW -->
         <div id="settings-view" class="view">
             <h2>Settings</h2>
+
+            <!-- Team Info Section -->
+            <div id="team-info-section" class="info-box" style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: none;">
+                <h3 style="margin-top: 0;">👥 Team Info</h3>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Team Name:</strong> <span id="team-name-display">—</span>
+                </div>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Team ID:</strong>
+                    <code id="team-id-display" style="background: var(--color-bg-tertiary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-left: 0.5rem;">—</code>
+                    <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; margin-left: 0.5rem;" onclick="App.UI.copyTeamId()">📋 Copy</button>
+                </div>
+                <p style="margin-bottom: 0; font-size: 0.85rem; color: var(--color-text-muted);">Share this Team ID with family members so they can join your team.</p>
+            </div>
 
             <div class="info-box" style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                 <h3 style="margin-top: 0;">✅ AI Research Ready</h3>
@@ -2786,6 +2802,36 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         this.renderDashboard();
                     } else if (viewName === 'actions') {
                         this.renderActions();
+                    } else if (viewName === 'settings') {
+                        this.renderTeamInfo();
+                    }
+                },
+
+                // Render team info in Settings
+                renderTeamInfo() {
+                    const teamSection = document.getElementById('team-info-section');
+                    const teamNameEl = document.getElementById('team-name-display');
+                    const teamIdEl = document.getElementById('team-id-display');
+
+                    if (App.Team.currentTeam) {
+                        teamSection.style.display = 'block';
+                        teamNameEl.textContent = App.Team.currentTeam.name || 'Unnamed Team';
+                        teamIdEl.textContent = App.Team.currentTeam.id;
+                    } else {
+                        teamSection.style.display = 'none';
+                    }
+                },
+
+                // Copy Team ID to clipboard
+                copyTeamId() {
+                    const teamId = App.Team.currentTeam?.id;
+                    if (teamId) {
+                        navigator.clipboard.writeText(teamId).then(() => {
+                            alert('Team ID copied to clipboard!');
+                        }).catch(err => {
+                            // Fallback for older browsers
+                            prompt('Copy this Team ID:', teamId);
+                        });
                     }
                 },
 
@@ -3470,6 +3516,15 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                     }
                 },
 
+                // Check if action is overdue
+                isOverdue(dueDate) {
+                    if (!dueDate) return false;
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const due = new Date(dueDate);
+                    return due < today;
+                },
+
                 // Render Actions View
                 renderActions() {
                     const schools = App.Storage.getSchools();
@@ -3477,27 +3532,45 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
 
                     schools.forEach(school => {
                         if (school.nextAction) {
+                            const isOverdue = this.isOverdue(school.actionDueDate);
                             allActions.push({
                                 school: school.schoolName,
                                 action: school.nextAction,
                                 owner: school.actionOwner || 'Not assigned',
                                 dueDate: school.actionDueDate,
-                                status: school.actionStatus || 'Pending'
+                                status: school.actionStatus || 'Pending',
+                                isOverdue: isOverdue
                             });
                         }
                     });
 
                     const pending = allActions.filter(a => a.status === 'Pending');
                     const completed = allActions.filter(a => a.status === 'Complete');
+                    const overdue = pending.filter(a => a.isOverdue);
+
+                    // Sort pending: overdue first, then by due date
+                    pending.sort((a, b) => {
+                        if (a.isOverdue && !b.isOverdue) return -1;
+                        if (!a.isOverdue && b.isOverdue) return 1;
+                        if (a.dueDate && b.dueDate) return new Date(a.dueDate) - new Date(b.dueDate);
+                        return 0;
+                    });
+
+                    const overdueLabel = overdue.length > 0 ? ` <span style="color: var(--color-danger); font-weight: bold;">(${overdue.length} overdue)</span>` : '';
 
                     const content = `
-                        <h3>Pending Actions (${pending.length})</h3>
+                        <h3>Pending Actions (${pending.length})${overdueLabel}</h3>
                         ${pending.length > 0 ? pending.map(a => `
-                            <div class="history-item">
+                            <div class="history-item" style="${a.isOverdue ? 'border-left: 4px solid var(--color-danger); background: rgba(230, 57, 70, 0.1);' : ''}">
                                 <p><strong>${a.school}</strong></p>
                                 <p>${a.action}</p>
                                 <p><strong>Owner:</strong> ${a.owner}</p>
-                                ${a.dueDate ? `<p><strong>Due:</strong> ${App.Utils.formatDate(a.dueDate)}</p>` : ''}
+                                ${a.dueDate ? `
+                                    <p>
+                                        <strong>Due:</strong> ${App.Utils.formatDate(a.dueDate)}
+                                        ${a.isOverdue ? '<span style="color: var(--color-danger); font-weight: bold; margin-left: 0.5rem;">⚠️ OVERDUE</span>' : ''}
+                                    </p>
+                                ` : ''}
                             </div>
                         `).join('') : '<p class="text-muted">No pending actions.</p>'}
 
