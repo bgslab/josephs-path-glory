@@ -147,6 +147,11 @@ The AI analysis is specifically tuned to:
   - Skills: Lead Blocker, Pass Catcher, Route Runner, etc.
   - Auto-fit badges (Good Fit/Stretch/Reach) based on GPA
   - Fixed scoring bug (weighted calculation)
+- [x] Phase 7: Enhanced School Cards (v1.8)
+  - Conference displayed on dashboard cards
+  - Division level for JUCOs (NJCAA D1, D3, CCCAA)
+  - Driving time from Crystal Lake, IL in AI research
+  - Quick Facts section in AI tab
 
 ### 🔜 Future Enhancements
 - [ ] Enhanced Contact Tracking
@@ -178,7 +183,7 @@ The AI analysis is specifically tuned to:
 ## 🤝 Credits
 
 Built by Claude Code for John Akalaonu
-**Version:** 1.7 Profile & Auto-Fit
+**Version:** 1.8 Enhanced School Cards
 **Date:** November 22, 2025
 **GitHub:** [bgslab/josephs-path-glory](https://github.com/bgslab/josephs-path-glory)
 

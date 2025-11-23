@@ -22,7 +22,7 @@
 
     <style>
         /**
-         * Joseph's Path to Glory - v1.7.1
+         * Joseph's Path to Glory - v1.8
          * Date: 2025-11-22
          *
          * Features:
@@ -739,7 +739,7 @@
     <div class="app-header">
         <div class="app-branding">
             <h1 class="app-title"><span style="-webkit-text-fill-color: initial; background: none;">🍽️</span> Joseph's Path to Glory</h1>
-            <p class="app-tagline">Fill Your Plate with Opportunity <span style="background: var(--color-bg-tertiary); color: var(--color-text-secondary); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; margin-left: 0.5rem;">v1.7.1</span></p>
+            <p class="app-tagline">Fill Your Plate with Opportunity <span style="background: var(--color-bg-tertiary); color: var(--color-text-secondary); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; margin-left: 0.5rem;">v1.8</span></p>
         </div>
         <div class="desktop-nav">
             <button class="btn btn-secondary nav-btn" data-view="dashboard">Dashboard</button>
@@ -2273,8 +2273,11 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
 {
   "school_name": "Full official name",
   "level": "JUCO/D1/D2/D3/NAIA",
+  "division": "For JUCO only: NJCAA D1, NJCAA D3, or CCCAA. For others: null",
   "location": "City, State",
   "conference": "Conference name",
+  "driving_time": "Driving time from Crystal Lake, IL (e.g., '3h 45m')",
+  "driving_distance": "Driving distance in miles (e.g., '215 miles')",
   "tuition_cost": "Annual cost estimate",
   "four_year_cost": "Total 4-year estimate (or 2-year for JUCO)",
   "head_coach": "Name and tenure",
@@ -2542,6 +2545,7 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     const schoolData = {
                         schoolName: data.school_name,
                         level: data.level,
+                        division: data.division || null,
                         location: data.location,
                         conference: data.conference,
 
@@ -2576,6 +2580,8 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
 
                         // AI Analysis
                         aiAnalysis: {
+                            drivingTime: data.driving_time,
+                            drivingDistance: data.driving_distance,
                             recentRecord: data.recent_record,
                             tuitionCost: data.tuition_cost,
                             fourYearCost: data.four_year_cost,
@@ -3423,10 +3429,11 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                             ` : ''}
 
                             <div class="school-meta">
-                                <span class="school-badge ${levelClass}">${school.level}</span>
+                                <span class="school-badge ${levelClass}">${school.level}${school.division ? ` • ${school.division}` : ''}</span>
                                 ${App.Profile.getFitBadge(school)}
                             </div>
-                            <div class="school-meta">${school.location || 'Location not set'}</div>
+                            <div class="school-meta">${school.location || 'Location not set'}${school.conference ? ` • ${school.conference}` : ''}</div>
+                            ${school.aiAnalysis?.drivingTime ? `<div class="school-meta" style="font-size: 0.85em;">🚗 ${school.aiAnalysis.drivingTime} from Crystal Lake</div>` : ''}
                             ${school.createdByName ? `<div class="school-meta" style="font-size: 0.8em; opacity: 0.7;">Added by ${school.createdByName}</div>` : ''}
                             ${school.offerStatus && school.offerStatus !== 'None' ?
                                 `<div class="school-meta text-success">📋 ${school.offerStatus}</div>` : ''}
@@ -3875,6 +3882,14 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                                 <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-success); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1.5rem;">
                                     <h3 style="margin-top: 0;">🎯 Recommendation</h3>
                                     <p style="color: var(--color-success); font-weight: 700; font-size: 1.1rem; margin-bottom: 0;">${ai.recommendation}</p>
+                                </div>
+                            ` : ''}
+
+                            ${(ai.drivingTime || school.division) ? `
+                                <!-- Quick Facts -->
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;">
+                                    ${school.division ? `<span style="background: var(--color-bg-tertiary); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.9rem;">🏈 ${school.division}</span>` : ''}
+                                    ${ai.drivingTime ? `<span style="background: var(--color-bg-tertiary); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.9rem;">🚗 ${ai.drivingTime}${ai.drivingDistance ? ` (${ai.drivingDistance})` : ''} from Crystal Lake</span>` : ''}
                                 </div>
                             ` : ''}
 

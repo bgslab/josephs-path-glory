@@ -1,6 +1,6 @@
 # Joseph's Path to Glory - Project Context
 **Last Updated:** November 22, 2025
-**Current Version:** v1.7 Profile & Auto-Fit
+**Current Version:** v1.8 Enhanced School Cards
 **Status:** ✅ Production - Live at https://bgslab.github.io/josephs-path-glory
 
 ---
@@ -1541,6 +1541,13 @@ db.collection('schools').get().then(snap => snap.forEach(doc => console.log(doc.
 
 ## 🏷️ CHANGELOG
 
+### v1.8 (November 22, 2025)
+- ✨ NEW: Conference displayed on school cards
+- ✨ NEW: Division level for JUCOs (NJCAA D1, NJCAA D3, CCCAA)
+- ✨ NEW: Driving time from Crystal Lake, IL in AI research
+- ✨ NEW: Quick Facts section in AI tab (division, driving time)
+- 🔧 CHANGE: AI prompt updated to include driving_time and driving_distance fields
+
 ### v1.7 (November 22, 2025)
 - ✨ NEW: Joseph's Profile system with physical characteristics and skills
 - ✨ NEW: Profile Editor in Settings with comprehensive fields
@@ -1620,8 +1627,8 @@ db.collection('schools').get().then(snap => snap.forEach(doc => console.log(doc.
 ---
 
 **Last Updated:** November 22, 2025
-**Current Version:** v1.7 Profile & Auto-Fit
-**Next Version:** v1.8 (Theme Toggle, JUCO Data - TBD)
+**Current Version:** v1.8 Enhanced School Cards
+**Next Version:** v1.9 (Theme Toggle, JUCO Data - TBD)
 
 ---
 
