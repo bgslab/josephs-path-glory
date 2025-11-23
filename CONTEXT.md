@@ -148,13 +148,14 @@ App.UI            // Lines 2669-3696 - View management & rendering
 - **Overdue Highlighting** - Overdue actions highlighted in red across all views
 
 ### Phase 6: Profile & Auto-Fit ✨ NEW (v1.7)
-- **Joseph's Profile** - Store GPA, film status, and position in localStorage
-- **Profile Editor** - New section in Settings to edit profile values
-- **Auto-Fit Calculation** - Schools automatically calculated as Good Fit/Stretch/Reach based on profile
+- **Joseph's Profile** - Store GPA, position, physical characteristics, and skills in localStorage
+- **Profile Editor** - Comprehensive section in Settings to edit all profile values
+- **Physical Characteristics** - Height, weight, 40-yard dash, vertical, bench, squat
+- **Skills Selection** - Toggle skills like Lead Blocker, Pass Catcher, Route Runner, etc.
+- **Auto-Fit Calculation** - Schools show Good Fit/Stretch/Reach based on GPA vs level requirements
 - **Fit Badges** - Visual badges (🟢 Good Fit, 🟡 Stretch, 🔴 Reach) on school cards and detail view
-- **Level-Based Requirements** - Different GPA and film requirements for JUCO/D1/D2/D3/NAIA
+- **Level-Based GPA Requirements** - JUCO/D3 (2.0), D2/NAIA (2.2), D1 (2.3)
 - **Scoring Bug Fixed** - Corrected weighted score calculation (was dividing by 5 incorrectly)
-- **Replaces Manual Likelihood** - Auto-fit replaces manual "Reach/Target/Safety" selection
 
 ---
 
@@ -1541,11 +1542,14 @@ db.collection('schools').get().then(snap => snap.forEach(doc => console.log(doc.
 ## 🏷️ CHANGELOG
 
 ### v1.7 (November 22, 2025)
-- ✨ NEW: Joseph's Profile system (GPA, film status, position stored in localStorage)
-- ✨ NEW: Profile Editor in Settings to update profile values
-- ✨ NEW: Auto-Fit calculation replaces manual Reach/Target/Safety
+- ✨ NEW: Joseph's Profile system with physical characteristics and skills
+- ✨ NEW: Profile Editor in Settings with comprehensive fields
+- ✨ NEW: Physical characteristics: height, weight, 40-time, vertical, bench, squat
+- ✨ NEW: Skills selection: Lead Blocker, Pass Catcher, Route Runner, etc.
+- ✨ NEW: Auto-Fit calculation based on GPA vs level requirements
 - ✨ NEW: Fit badges on school cards (🟢 Good Fit, 🟡 Stretch, 🔴 Reach)
 - 🐛 FIX: Scoring bug - weighted scores were being divided by 5 incorrectly
+- 🔧 CHANGE: Removed film status from fit calculation (GPA-based only)
 - 🔧 CHANGE: Overview tab shows "Profile Fit" instead of "Likelihood"
 
 ### v1.6 (November 22, 2025)

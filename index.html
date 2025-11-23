@@ -1127,26 +1127,54 @@
             <!-- Joseph's Profile Section -->
             <div class="info-box" style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                 <h3 style="margin-top: 0;">🏈 Joseph's Profile</h3>
-                <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">This profile is used to calculate fit with each school.</p>
+                <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">This profile is used to calculate fit and displayed to coaches.</p>
 
-                <div class="form-group" style="margin-bottom: 0.75rem;">
-                    <label for="profile-gpa" style="font-weight: 600; font-size: 0.85rem;">GPA</label>
-                    <input type="number" id="profile-gpa" step="0.1" min="0" max="4.0" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                <!-- Basic Info -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-gpa" style="font-weight: 600; font-size: 0.85rem;">GPA</label>
+                        <input type="number" id="profile-gpa" step="0.1" min="0" max="4.0" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-position" style="font-weight: 600; font-size: 0.85rem;">Position</label>
+                        <input type="text" id="profile-position" placeholder="e.g., TE/FB" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 0.75rem;">
-                    <label for="profile-film" style="font-weight: 600; font-size: 0.85rem;">Film Status</label>
-                    <select id="profile-film" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
-                        <option value="none">None - No game film available</option>
-                        <option value="limited">Limited - Some clips, missed season</option>
-                        <option value="solid">Solid - Full season of film</option>
-                        <option value="strong">Strong - Multiple seasons, highlights</option>
-                    </select>
+                <!-- Physical Characteristics -->
+                <h4 style="margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: var(--color-text-secondary);">Physical Characteristics</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-height" style="font-weight: 600; font-size: 0.85rem;">Height</label>
+                        <input type="text" id="profile-height" placeholder="e.g., 6'2&quot;" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-weight" style="font-weight: 600; font-size: 0.85rem;">Weight (lbs)</label>
+                        <input type="number" id="profile-weight" placeholder="e.g., 235" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-forty" style="font-weight: 600; font-size: 0.85rem;">40-Yard Dash</label>
+                        <input type="text" id="profile-forty" placeholder="e.g., 4.8" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-vertical" style="font-weight: 600; font-size: 0.85rem;">Vertical (in)</label>
+                        <input type="number" id="profile-vertical" placeholder="e.g., 28" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-bench" style="font-weight: 600; font-size: 0.85rem;">Bench (lbs)</label>
+                        <input type="number" id="profile-bench" placeholder="e.g., 225" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="profile-squat" style="font-weight: 600; font-size: 0.85rem;">Squat (lbs)</label>
+                        <input type="number" id="profile-squat" placeholder="e.g., 315" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                    </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 0.75rem;">
-                    <label for="profile-position" style="font-weight: 600; font-size: 0.85rem;">Position</label>
-                    <input type="text" id="profile-position" placeholder="e.g., TE/FB" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                <!-- Skills -->
+                <h4 style="margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: var(--color-text-secondary);">Skills & Strengths</h4>
+                <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 0.5rem;">Select all that apply:</p>
+                <div id="profile-skills-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                    <!-- Skills checkboxes populated by JS -->
                 </div>
 
                 <button class="btn btn-primary" onclick="App.UI.saveProfile()" style="width: 100%;">Save Profile</button>
@@ -1848,17 +1876,39 @@
             Profile: {
                 STORAGE_KEY: 'josephProfile',
 
+                // Available skills to select from
+                availableSkills: [
+                    'Lead Blocker',
+                    'Run Blocker',
+                    'Pass Catcher',
+                    'Route Runner',
+                    'Red Zone Target',
+                    'Special Teams',
+                    'H-Back Versatility',
+                    'Inline Blocker',
+                    'Chip & Release',
+                    'YAC Ability',
+                    'Soft Hands',
+                    'Physical Runner'
+                ],
+
                 // Default profile for Joseph
                 defaultProfile: {
                     name: 'Joseph',
                     gpa: 2.3,
                     coreGpa: null,
                     testScores: null,
-                    filmStatus: 'limited', // 'none', 'limited', 'solid', 'strong'
                     position: 'TE/FB',
+                    gradYear: 2025,
+                    // Physical characteristics
                     height: "6'2\"",
                     weight: 235,
-                    gradYear: 2025
+                    fortyTime: null,
+                    bench: null,
+                    squat: null,
+                    vertical: null,
+                    // Skills (array of selected skills)
+                    skills: ['Lead Blocker']
                 },
 
                 // Get profile from localStorage
@@ -1875,37 +1925,30 @@
                     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(profile));
                 },
 
-                // Calculate auto-fit for a school based on Joseph's profile
+                // Calculate auto-fit for a school based on Joseph's profile (GPA-based)
                 calculateFit(school) {
                     const profile = this.getProfile();
                     const level = school.level || 'D2';
 
-                    // Define requirements by level
+                    // Define GPA requirements by level
                     const requirements = {
-                        'JUCO': { minGpa: 2.0, filmNeeded: 'none' },
-                        'D1': { minGpa: 2.3, filmNeeded: 'solid' },
-                        'D2': { minGpa: 2.2, filmNeeded: 'limited' },
-                        'D3': { minGpa: 2.0, filmNeeded: 'none' },
-                        'NAIA': { minGpa: 2.0, filmNeeded: 'limited' }
+                        'JUCO': { minGpa: 2.0 },
+                        'D1': { minGpa: 2.3 },
+                        'D2': { minGpa: 2.2 },
+                        'D3': { minGpa: 2.0 },
+                        'NAIA': { minGpa: 2.0 }
                     };
 
                     const req = requirements[level] || requirements['D2'];
-                    const filmLevels = ['none', 'limited', 'solid', 'strong'];
 
                     // Check GPA fit
                     const gpaFit = profile.gpa >= req.minGpa;
                     const gpaClose = profile.gpa >= (req.minGpa - 0.2);
 
-                    // Check film fit
-                    const profileFilmIndex = filmLevels.indexOf(profile.filmStatus);
-                    const requiredFilmIndex = filmLevels.indexOf(req.filmNeeded);
-                    const filmFit = profileFilmIndex >= requiredFilmIndex;
-                    const filmClose = profileFilmIndex >= (requiredFilmIndex - 1);
-
-                    // Calculate overall fit
-                    if (gpaFit && filmFit) {
+                    // Calculate overall fit based on GPA
+                    if (gpaFit) {
                         return { fit: 'good', label: 'Good Fit', color: 'var(--color-success)', icon: '🟢' };
-                    } else if ((gpaFit || gpaClose) && (filmFit || filmClose)) {
+                    } else if (gpaClose) {
                         return { fit: 'stretch', label: 'Stretch', color: 'var(--color-warning, #f39c12)', icon: '🟡' };
                     } else {
                         return { fit: 'reach', label: 'Reach', color: 'var(--color-danger)', icon: '🔴' };
@@ -1916,6 +1959,14 @@
                 getFitBadge(school) {
                     const fit = this.calculateFit(school);
                     return `<span style="background: ${fit.color}; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">${fit.icon} ${fit.label}</span>`;
+                },
+
+                // Get skills badge HTML for display
+                getSkillsBadges(skills) {
+                    if (!skills || skills.length === 0) return '';
+                    return skills.map(skill =>
+                        `<span style="background: var(--color-bg-tertiary); color: var(--color-text-primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; margin-right: 0.25rem; margin-bottom: 0.25rem; display: inline-block;">${skill}</span>`
+                    ).join('');
                 }
             },
 
@@ -3078,25 +3129,84 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                 // Load profile into Settings form
                 loadProfile() {
                     const profile = App.Profile.getProfile();
-                    const gpaInput = document.getElementById('profile-gpa');
-                    const filmSelect = document.getElementById('profile-film');
-                    const positionInput = document.getElementById('profile-position');
 
+                    // Basic info
+                    const gpaInput = document.getElementById('profile-gpa');
+                    const positionInput = document.getElementById('profile-position');
                     if (gpaInput) gpaInput.value = profile.gpa || '';
-                    if (filmSelect) filmSelect.value = profile.filmStatus || 'limited';
                     if (positionInput) positionInput.value = profile.position || '';
+
+                    // Physical characteristics
+                    const heightInput = document.getElementById('profile-height');
+                    const weightInput = document.getElementById('profile-weight');
+                    const fortyInput = document.getElementById('profile-forty');
+                    const verticalInput = document.getElementById('profile-vertical');
+                    const benchInput = document.getElementById('profile-bench');
+                    const squatInput = document.getElementById('profile-squat');
+
+                    if (heightInput) heightInput.value = profile.height || '';
+                    if (weightInput) weightInput.value = profile.weight || '';
+                    if (fortyInput) fortyInput.value = profile.fortyTime || '';
+                    if (verticalInput) verticalInput.value = profile.vertical || '';
+                    if (benchInput) benchInput.value = profile.bench || '';
+                    if (squatInput) squatInput.value = profile.squat || '';
+
+                    // Populate skills checkboxes
+                    const skillsContainer = document.getElementById('profile-skills-container');
+                    if (skillsContainer) {
+                        skillsContainer.innerHTML = App.Profile.availableSkills.map(skill => {
+                            const isChecked = profile.skills && profile.skills.includes(skill);
+                            const skillId = `skill-${skill.toLowerCase().replace(/\s+/g, '-')}`;
+                            return `
+                                <label style="display: flex; align-items: center; background: ${isChecked ? 'var(--color-accent-primary)' : 'var(--color-bg-tertiary)'}; color: ${isChecked ? 'white' : 'var(--color-text-primary)'}; padding: 0.4rem 0.75rem; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;">
+                                    <input type="checkbox" id="${skillId}" value="${skill}" ${isChecked ? 'checked' : ''} style="display: none;" onchange="App.UI.toggleSkillStyle(this)">
+                                    ${skill}
+                                </label>
+                            `;
+                        }).join('');
+                    }
+                },
+
+                // Toggle skill checkbox style
+                toggleSkillStyle(checkbox) {
+                    const label = checkbox.parentElement;
+                    if (checkbox.checked) {
+                        label.style.background = 'var(--color-accent-primary)';
+                        label.style.color = 'white';
+                    } else {
+                        label.style.background = 'var(--color-bg-tertiary)';
+                        label.style.color = 'var(--color-text-primary)';
+                    }
                 },
 
                 // Save profile from Settings form
                 saveProfile() {
-                    const gpaInput = document.getElementById('profile-gpa');
-                    const filmSelect = document.getElementById('profile-film');
-                    const positionInput = document.getElementById('profile-position');
-
                     const profile = App.Profile.getProfile();
+
+                    // Basic info
+                    const gpaInput = document.getElementById('profile-gpa');
+                    const positionInput = document.getElementById('profile-position');
                     profile.gpa = parseFloat(gpaInput?.value) || 2.0;
-                    profile.filmStatus = filmSelect?.value || 'limited';
                     profile.position = positionInput?.value || 'TE/FB';
+
+                    // Physical characteristics
+                    const heightInput = document.getElementById('profile-height');
+                    const weightInput = document.getElementById('profile-weight');
+                    const fortyInput = document.getElementById('profile-forty');
+                    const verticalInput = document.getElementById('profile-vertical');
+                    const benchInput = document.getElementById('profile-bench');
+                    const squatInput = document.getElementById('profile-squat');
+
+                    profile.height = heightInput?.value || null;
+                    profile.weight = weightInput?.value ? parseInt(weightInput.value) : null;
+                    profile.fortyTime = fortyInput?.value || null;
+                    profile.vertical = verticalInput?.value ? parseInt(verticalInput.value) : null;
+                    profile.bench = benchInput?.value ? parseInt(benchInput.value) : null;
+                    profile.squat = squatInput?.value ? parseInt(squatInput.value) : null;
+
+                    // Collect selected skills
+                    const skillCheckboxes = document.querySelectorAll('#profile-skills-container input[type="checkbox"]:checked');
+                    profile.skills = Array.from(skillCheckboxes).map(cb => cb.value);
 
                     App.Profile.saveProfile(profile);
 

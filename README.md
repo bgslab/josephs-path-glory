@@ -64,10 +64,11 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Automatic Migration** - Existing actions automatically converted to new system
 
 ### Phase 6: Profile & Auto-Fit ✨ NEW
-- **Joseph's Profile** - Store GPA, film status, and position in Settings
-- **Profile Editor** - Update profile values that affect fit calculations
-- **Auto-Fit Badges** - Schools show 🟢 Good Fit, 🟡 Stretch, or 🔴 Reach based on profile
-- **Level-Based Requirements** - Different requirements for JUCO/D1/D2/D3/NAIA
+- **Joseph's Profile** - Store GPA, position, physical characteristics, and skills
+- **Physical Characteristics** - Height, weight, 40-yard dash, vertical, bench, squat
+- **Skills Selection** - Toggle skills like Lead Blocker, Pass Catcher, Route Runner
+- **Auto-Fit Badges** - Schools show 🟢 Good Fit, 🟡 Stretch, or 🔴 Reach based on GPA
+- **Level-Based GPA Requirements** - JUCO/D3 (2.0), D2/NAIA (2.2), D1 (2.3)
 - **Scoring Fix** - Corrected weighted score calculation for accurate Overall Scores
 
 ## 🚀 Live App
@@ -140,9 +141,11 @@ The AI analysis is specifically tuned to:
   - Add new or replace existing actions
   - Overdue action highlights
 - [x] Phase 6: Profile & Auto-Fit (v1.7)
-  - Joseph's Profile (GPA, film status, position)
-  - Profile Editor in Settings
-  - Auto-fit badges (Good Fit/Stretch/Reach)
+  - Joseph's Profile (GPA, position, physical characteristics, skills)
+  - Profile Editor with comprehensive fields
+  - Physical: height, weight, 40-time, vertical, bench, squat
+  - Skills: Lead Blocker, Pass Catcher, Route Runner, etc.
+  - Auto-fit badges (Good Fit/Stretch/Reach) based on GPA
   - Fixed scoring bug (weighted calculation)
 
 ### 🔜 Future Enhancements
