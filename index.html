@@ -3870,6 +3870,14 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                     if (school.aiAnalysis) {
                         const ai = school.aiAnalysis;
                         return `
+                            ${ai.recommendation ? `
+                                <!-- Recommendation - TOP OF PAGE -->
+                                <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-success); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1.5rem;">
+                                    <h3 style="margin-top: 0;">🎯 Recommendation</h3>
+                                    <p style="color: var(--color-success); font-weight: 700; font-size: 1.1rem; margin-bottom: 0;">${ai.recommendation}</p>
+                                </div>
+                            ` : ''}
+
                             ${ai.positionFit ? `
                                 <!-- Position Fit Assessment -->
                                 <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-accent-primary); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1.5rem;">
@@ -3973,14 +3981,36 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                                 </ul>
                             ` : ''}
 
-                            ${ai.recommendation ? `
-                                <h3 class="mt-2">Recommendation</h3>
-                                <p style="color: var(--color-accent-secondary); font-weight: 700;">${ai.recommendation}</p>
-                            ` : ''}
-
                             ${ai.comparisonToJuco ? `
                                 <h3 class="mt-2">vs JUCO Option</h3>
                                 <p>${ai.comparisonToJuco}</p>
+                            ` : ''}
+
+                            ${(ai.contactScriptTwitter || ai.contactScriptEmail) ? `
+                                <!-- Contact Scripts -->
+                                <div style="background: var(--color-bg-secondary); border: 2px solid var(--color-accent-primary); border-radius: var(--border-radius); padding: 1rem; margin-top: 1.5rem;">
+                                    <h3 style="margin-top: 0;">📧 Ready-to-Use Contact Scripts</h3>
+
+                                    ${ai.contactScriptTwitter ? `
+                                        <div style="margin-bottom: 1rem;">
+                                            <p style="font-weight: 600; margin-bottom: 0.5rem;">Twitter/X DM:</p>
+                                            <div style="background: var(--color-bg-tertiary); padding: 0.75rem; border-radius: 6px; font-size: 0.9rem; position: relative;">
+                                                <p id="twitter-script-${school.id}" style="margin: 0; white-space: pre-wrap;">${ai.contactScriptTwitter}</p>
+                                                <button onclick="App.Utils.copyText('twitter-script-${school.id}', this)" style="position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; background: var(--color-accent-primary); color: white; border: none; border-radius: 4px; cursor: pointer;">Copy</button>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+
+                                    ${ai.contactScriptEmail ? `
+                                        <div>
+                                            <p style="font-weight: 600; margin-bottom: 0.5rem;">Email Template:</p>
+                                            <div style="background: var(--color-bg-tertiary); padding: 0.75rem; border-radius: 6px; font-size: 0.9rem; position: relative;">
+                                                <p id="email-script-${school.id}" style="margin: 0; white-space: pre-wrap;">${ai.contactScriptEmail}</p>
+                                                <button onclick="App.Utils.copyText('email-script-${school.id}', this)" style="position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; background: var(--color-accent-primary); color: white; border: none; border-radius: 4px; cursor: pointer;">Copy</button>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
                             ` : ''}
                         `;
                     } else {
@@ -4829,6 +4859,18 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         month: 'short',
                         day: 'numeric'
                     });
+                },
+
+                // Copy text to clipboard
+                copyText(elementId, button) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        navigator.clipboard.writeText(element.textContent).then(() => {
+                            const originalText = button.textContent;
+                            button.textContent = 'Copied!';
+                            setTimeout(() => button.textContent = originalText, 2000);
+                        });
+                    }
                 }
             }
         };
