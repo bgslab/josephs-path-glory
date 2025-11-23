@@ -54,7 +54,7 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Quick Add** - Save discovered schools to tracker with one click
 - **Already Tracked Badge** - Shows which schools are already in your list
 
-### Phase 5: Multi-Action System ✨ NEW
+### Phase 5: Multi-Action System
 - **Multiple Actions Per School** - Track unlimited actions for each school
 - **Add or Replace** - Choose to add new action or replace existing one
 - **Action History** - Complete audit log of all action changes per school
@@ -62,6 +62,13 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Bulk Action Creation** - Add the same action to multiple schools at once
 - **Action Timestamps** - See when actions were added, modified, or completed
 - **Automatic Migration** - Existing actions automatically converted to new system
+
+### Phase 6: Profile & Auto-Fit ✨ NEW
+- **Joseph's Profile** - Store GPA, film status, and position in Settings
+- **Profile Editor** - Update profile values that affect fit calculations
+- **Auto-Fit Badges** - Schools show 🟢 Good Fit, 🟡 Stretch, or 🔴 Reach based on profile
+- **Level-Based Requirements** - Different requirements for JUCO/D1/D2/D3/NAIA
+- **Scoring Fix** - Corrected weighted score calculation for accurate Overall Scores
 
 ## 🚀 Live App
 
@@ -119,7 +126,7 @@ The AI analysis is specifically tuned to:
 
 ## 📝 Roadmap
 
-### ✅ Completed (v1.6)
+### ✅ Completed (v1.7)
 - [x] Phase 1: Core Database & Dashboard
 - [x] Phase 2: AI Research Integration
 - [x] Phase 2.5: Multi-Factor Scoring System
@@ -132,6 +139,11 @@ The AI analysis is specifically tuned to:
   - Activity tab with timestamps
   - Add new or replace existing actions
   - Overdue action highlights
+- [x] Phase 6: Profile & Auto-Fit (v1.7)
+  - Joseph's Profile (GPA, film status, position)
+  - Profile Editor in Settings
+  - Auto-fit badges (Good Fit/Stretch/Reach)
+  - Fixed scoring bug (weighted calculation)
 
 ### 🔜 Future Enhancements
 - [ ] Enhanced Contact Tracking
@@ -163,7 +175,7 @@ The AI analysis is specifically tuned to:
 ## 🤝 Credits
 
 Built by Claude Code for John Akalaonu
-**Version:** 1.6 Multi-Action System
+**Version:** 1.7 Profile & Auto-Fit
 **Date:** November 22, 2025
 **GitHub:** [bgslab/josephs-path-glory](https://github.com/bgslab/josephs-path-glory)
 

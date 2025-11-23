@@ -22,7 +22,7 @@
 
     <style>
         /**
-         * Joseph's Path to Glory - v1.6 Multi-Action System
+         * Joseph's Path to Glory - v1.7 Profile & Auto-Fit
          * Date: 2025-11-22
          *
          * Features:
@@ -1124,6 +1124,34 @@
                 <p style="margin-bottom: 0; font-size: 0.85rem; color: var(--color-text-muted);">Share this Team ID with family members so they can join your team.</p>
             </div>
 
+            <!-- Joseph's Profile Section -->
+            <div class="info-box" style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <h3 style="margin-top: 0;">🏈 Joseph's Profile</h3>
+                <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">This profile is used to calculate fit with each school.</p>
+
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <label for="profile-gpa" style="font-weight: 600; font-size: 0.85rem;">GPA</label>
+                    <input type="number" id="profile-gpa" step="0.1" min="0" max="4.0" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <label for="profile-film" style="font-weight: 600; font-size: 0.85rem;">Film Status</label>
+                    <select id="profile-film" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                        <option value="none">None - No game film available</option>
+                        <option value="limited">Limited - Some clips, missed season</option>
+                        <option value="solid">Solid - Full season of film</option>
+                        <option value="strong">Strong - Multiple seasons, highlights</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <label for="profile-position" style="font-weight: 600; font-size: 0.85rem;">Position</label>
+                    <input type="text" id="profile-position" placeholder="e.g., TE/FB" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg-tertiary); color: var(--color-text-primary);">
+                </div>
+
+                <button class="btn btn-primary" onclick="App.UI.saveProfile()" style="width: 100%;">Save Profile</button>
+            </div>
+
             <div class="info-box" style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                 <h3 style="margin-top: 0;">✅ AI Research Ready</h3>
                 <p style="margin-bottom: 0;">Claude API is configured and ready to use. No setup required - just click "Research with AI" to analyze any school!</p>
@@ -1816,6 +1844,81 @@
                 }
             },
 
+            // ===== PROFILE MODULE =====
+            Profile: {
+                STORAGE_KEY: 'josephProfile',
+
+                // Default profile for Joseph
+                defaultProfile: {
+                    name: 'Joseph',
+                    gpa: 2.3,
+                    coreGpa: null,
+                    testScores: null,
+                    filmStatus: 'limited', // 'none', 'limited', 'solid', 'strong'
+                    position: 'TE/FB',
+                    height: "6'2\"",
+                    weight: 235,
+                    gradYear: 2025
+                },
+
+                // Get profile from localStorage
+                getProfile() {
+                    const stored = localStorage.getItem(this.STORAGE_KEY);
+                    if (stored) {
+                        return { ...this.defaultProfile, ...JSON.parse(stored) };
+                    }
+                    return { ...this.defaultProfile };
+                },
+
+                // Save profile to localStorage
+                saveProfile(profile) {
+                    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(profile));
+                },
+
+                // Calculate auto-fit for a school based on Joseph's profile
+                calculateFit(school) {
+                    const profile = this.getProfile();
+                    const level = school.level || 'D2';
+
+                    // Define requirements by level
+                    const requirements = {
+                        'JUCO': { minGpa: 2.0, filmNeeded: 'none' },
+                        'D1': { minGpa: 2.3, filmNeeded: 'solid' },
+                        'D2': { minGpa: 2.2, filmNeeded: 'limited' },
+                        'D3': { minGpa: 2.0, filmNeeded: 'none' },
+                        'NAIA': { minGpa: 2.0, filmNeeded: 'limited' }
+                    };
+
+                    const req = requirements[level] || requirements['D2'];
+                    const filmLevels = ['none', 'limited', 'solid', 'strong'];
+
+                    // Check GPA fit
+                    const gpaFit = profile.gpa >= req.minGpa;
+                    const gpaClose = profile.gpa >= (req.minGpa - 0.2);
+
+                    // Check film fit
+                    const profileFilmIndex = filmLevels.indexOf(profile.filmStatus);
+                    const requiredFilmIndex = filmLevels.indexOf(req.filmNeeded);
+                    const filmFit = profileFilmIndex >= requiredFilmIndex;
+                    const filmClose = profileFilmIndex >= (requiredFilmIndex - 1);
+
+                    // Calculate overall fit
+                    if (gpaFit && filmFit) {
+                        return { fit: 'good', label: 'Good Fit', color: 'var(--color-success)', icon: '🟢' };
+                    } else if ((gpaFit || gpaClose) && (filmFit || filmClose)) {
+                        return { fit: 'stretch', label: 'Stretch', color: 'var(--color-warning, #f39c12)', icon: '🟡' };
+                    } else {
+                        return { fit: 'reach', label: 'Reach', color: 'var(--color-danger)', icon: '🔴' };
+                    }
+                },
+
+                // Get fit badge HTML
+                getFitBadge(school) {
+                    const fit = this.calculateFit(school);
+                    return `<span style="background: ${fit.color}; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">${fit.icon} ${fit.label}</span>`;
+                }
+            },
+
             // ===== CLOUD SYNC MODULE =====
             CloudSync: {
                 unsubscribe: null,
@@ -2488,13 +2591,14 @@ Provide your response in this EXACT JSON format (DO NOT include markdown code bl
                     const weights = this.getWeightsByLevel(data.level);
                     const scores = data.scores;
 
+                    // Weights sum to 1.0, so no division needed
                     const weighted = (
                         (scores.playing_time?.value || 0) * weights.playingTime +
                         (scores.position_development?.value || 0) * weights.positionDevelopment +
                         (scores.transfer_pipeline?.value || 0) * weights.transferPipeline +
                         (scores.coaching_stability?.value || 0) * weights.coaching +
                         (scores.academic_fit?.value || 0) * weights.academic
-                    ) / 5;
+                    );
 
                     return weighted;
                 },
@@ -2939,6 +3043,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         this.renderActions();
                     } else if (viewName === 'settings') {
                         this.renderTeamInfo();
+                        this.loadProfile();
                     }
                 },
 
@@ -2968,6 +3073,37 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                             prompt('Copy this Team ID:', teamId);
                         });
                     }
+                },
+
+                // Load profile into Settings form
+                loadProfile() {
+                    const profile = App.Profile.getProfile();
+                    const gpaInput = document.getElementById('profile-gpa');
+                    const filmSelect = document.getElementById('profile-film');
+                    const positionInput = document.getElementById('profile-position');
+
+                    if (gpaInput) gpaInput.value = profile.gpa || '';
+                    if (filmSelect) filmSelect.value = profile.filmStatus || 'limited';
+                    if (positionInput) positionInput.value = profile.position || '';
+                },
+
+                // Save profile from Settings form
+                saveProfile() {
+                    const gpaInput = document.getElementById('profile-gpa');
+                    const filmSelect = document.getElementById('profile-film');
+                    const positionInput = document.getElementById('profile-position');
+
+                    const profile = App.Profile.getProfile();
+                    profile.gpa = parseFloat(gpaInput?.value) || 2.0;
+                    profile.filmStatus = filmSelect?.value || 'limited';
+                    profile.position = positionInput?.value || 'TE/FB';
+
+                    App.Profile.saveProfile(profile);
+
+                    // Re-render schools to update fit badges
+                    this.renderSchools();
+
+                    alert('Profile saved! Fit badges updated.');
                 },
 
                 // Set stat filter (On Plate / Offers / Priority)
@@ -3145,7 +3281,6 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                 // Render school card
                 renderSchoolCard(school) {
                     const levelClass = `badge-${school.level.toLowerCase().replace(/\s/g, '-')}`;
-                    const likelihoodClass = `badge-${school.likelihood?.toLowerCase() || 'target'}`;
                     const rating = school.ratings?.overall || 0;
                     const nextAction = school.nextAction || 'No action set';
 
@@ -3179,7 +3314,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
 
                             <div class="school-meta">
                                 <span class="school-badge ${levelClass}">${school.level}</span>
-                                ${school.likelihood ? `<span class="school-badge ${likelihoodClass}">${school.likelihood}</span>` : ''}
+                                ${App.Profile.getFitBadge(school)}
                             </div>
                             <div class="school-meta">${school.location || 'Location not set'}</div>
                             ${school.createdByName ? `<div class="school-meta" style="font-size: 0.8em; opacity: 0.7;">Added by ${school.createdByName}</div>` : ''}
@@ -3205,7 +3340,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         </div>
                         <div class="school-meta mb-2">
                             <span class="school-badge badge-${school.level.toLowerCase()}">${school.level}</span>
-                            ${school.likelihood ? `<span class="school-badge badge-${school.likelihood.toLowerCase()}">${school.likelihood}</span>` : ''}
+                            ${App.Profile.getFitBadge(school)}
                         </div>
 
                         ${this.renderVerificationWarning(school)}
@@ -3412,7 +3547,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         <h3>Status</h3>
                         <p><strong>Our Interest:</strong> ${school.ourInterestLevel || 'Not set'}</p>
                         <p><strong>Their Interest:</strong> ${school.theirInterestLevel || 'Unknown'}</p>
-                        <p><strong>Likelihood:</strong> ${school.likelihood || 'Not set'}</p>
+                        <p><strong>Profile Fit:</strong> ${App.Profile.getFitBadge(school)}</p>
                         <p><strong>Offer Status:</strong> ${school.offerStatus || 'None'}</p>
 
                         ${school.aiAnalysis?.scores ? `

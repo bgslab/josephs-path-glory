@@ -1,6 +1,6 @@
 # Joseph's Path to Glory - Project Context
 **Last Updated:** November 22, 2025
-**Current Version:** v1.6 Multi-Action System
+**Current Version:** v1.7 Profile & Auto-Fit
 **Status:** ✅ Production - Live at https://bgslab.github.io/josephs-path-glory
 
 ---
@@ -87,7 +87,7 @@ App.UI            // Lines 2669-3696 - View management & rendering
 
 ---
 
-## 🎯 CURRENT FEATURES (v1.6)
+## 🎯 CURRENT FEATURES (v1.7)
 
 ### Phase 1: Core Database & Dashboard
 - **School Tracker** - Manage 50+ schools with complete CRUD operations
@@ -136,7 +136,7 @@ App.UI            // Lines 2669-3696 - View management & rendering
 - **Same Scoring Logic** - Uses identical 5-dimension criteria and weights as individual research
 - **Cost-Efficient** - ~$0.05 per discovery search (~3,000 tokens output vs ~1,500 for individual school)
 
-### Phase 5: Multi-Action System ✨ NEW (v1.6)
+### Phase 5: Multi-Action System (v1.6)
 - **Multiple Actions Per School** - Track unlimited action items for each school (not just one)
 - **Add or Replace** - Choose to add new action or replace an existing one
 - **Action History/Audit Log** - Complete history of all action changes per school with timestamps
@@ -146,6 +146,15 @@ App.UI            // Lines 2669-3696 - View management & rendering
 - **Action Timestamps** - See when actions were added, modified, or completed
 - **Automatic Migration** - Existing single-action data automatically converted to new array format
 - **Overdue Highlighting** - Overdue actions highlighted in red across all views
+
+### Phase 6: Profile & Auto-Fit ✨ NEW (v1.7)
+- **Joseph's Profile** - Store GPA, film status, and position in localStorage
+- **Profile Editor** - New section in Settings to edit profile values
+- **Auto-Fit Calculation** - Schools automatically calculated as Good Fit/Stretch/Reach based on profile
+- **Fit Badges** - Visual badges (🟢 Good Fit, 🟡 Stretch, 🔴 Reach) on school cards and detail view
+- **Level-Based Requirements** - Different GPA and film requirements for JUCO/D1/D2/D3/NAIA
+- **Scoring Bug Fixed** - Corrected weighted score calculation (was dividing by 5 incorrectly)
+- **Replaces Manual Likelihood** - Auto-fit replaces manual "Reach/Target/Safety" selection
 
 ---
 
@@ -1531,6 +1540,23 @@ db.collection('schools').get().then(snap => snap.forEach(doc => console.log(doc.
 
 ## 🏷️ CHANGELOG
 
+### v1.7 (November 22, 2025)
+- ✨ NEW: Joseph's Profile system (GPA, film status, position stored in localStorage)
+- ✨ NEW: Profile Editor in Settings to update profile values
+- ✨ NEW: Auto-Fit calculation replaces manual Reach/Target/Safety
+- ✨ NEW: Fit badges on school cards (🟢 Good Fit, 🟡 Stretch, 🔴 Reach)
+- 🐛 FIX: Scoring bug - weighted scores were being divided by 5 incorrectly
+- 🔧 CHANGE: Overview tab shows "Profile Fit" instead of "Likelihood"
+
+### v1.6 (November 22, 2025)
+- ✨ NEW: Multi-Action System - unlimited actions per school
+- ✨ NEW: Add or Replace dialog for existing actions
+- ✨ NEW: Action history/audit log per school
+- ✨ NEW: Activity tab in school detail view
+- ✨ NEW: Bulk action creation via checkboxes
+- 🐛 FIX: generateId() function added to Utils
+- 🐛 FIX: Replace mode now correctly deletes old action
+
 ### v1.4 (November 22, 2025)
 - ✨ NEW: XOS Digital professional theme (dark charcoal + red accents)
 - ✨ NEW: Plate motif throughout UI ("Fill Your Plate with Opportunity")
@@ -1590,8 +1616,8 @@ db.collection('schools').get().then(snap => snap.forEach(doc => console.log(doc.
 ---
 
 **Last Updated:** November 22, 2025
-**Current Version:** v1.4 XOS Theme + Stat Filters
-**Next Version:** v1.5 (Enhanced Tracking - TBD)
+**Current Version:** v1.7 Profile & Auto-Fit
+**Next Version:** v1.8 (Theme Toggle, JUCO Data - TBD)
 
 ---
 
