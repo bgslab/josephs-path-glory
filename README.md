@@ -45,7 +45,7 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Team Management** - Create team or join existing team with Team ID
 - **Real-Time Team Sync** - Changes from any team member appear instantly for everyone
 
-### Phase 4: School Discovery (AI Reverse Lookup) ✨ NEW
+### Phase 4: School Discovery (AI Reverse Lookup)
 - **Smart Filters** - Search by level, state, conference, minimum score
 - **AI-Powered Discovery** - Find top 10 schools matching Joseph's profile
 - **Stack-Ranked Results** - Schools ranked 1-10 with scores and reasoning
@@ -53,6 +53,15 @@ Joseph's Path to Glory is a comprehensive recruiting management system designed 
 - **Deep Dive Option** - Click "Full Research" for comprehensive analysis
 - **Quick Add** - Save discovered schools to tracker with one click
 - **Already Tracked Badge** - Shows which schools are already in your list
+
+### Phase 5: Multi-Action System ✨ NEW
+- **Multiple Actions Per School** - Track unlimited actions for each school
+- **Add or Replace** - Choose to add new action or replace existing one
+- **Action History** - Complete audit log of all action changes per school
+- **Activity Tab** - New tab in school detail showing all activity with timestamps
+- **Bulk Action Creation** - Add the same action to multiple schools at once
+- **Action Timestamps** - See when actions were added, modified, or completed
+- **Automatic Migration** - Existing actions automatically converted to new system
 
 ## 🚀 Live App
 
@@ -110,20 +119,24 @@ The AI analysis is specifically tuned to:
 
 ## 📝 Roadmap
 
-### ✅ Completed (v1.2)
+### ✅ Completed (v1.6)
 - [x] Phase 1: Core Database & Dashboard
 - [x] Phase 2: AI Research Integration
 - [x] Phase 2.5: Multi-Factor Scoring System
 - [x] Phase 3: Firebase Cloud Sync
 - [x] Phase 3.5: Team Collaboration
 - [x] Phase 4: School Discovery (AI Reverse Lookup)
+- [x] Phase 5: Multi-Action System (v1.6)
+  - Multiple actions per school
+  - Action history/audit log
+  - Activity tab with timestamps
+  - Add new or replace existing actions
+  - Overdue action highlights
 
 ### 🔜 Future Enhancements
-- [ ] Enhanced Contact & Action Tracking
+- [ ] Enhanced Contact Tracking
   - Quick-add contact entry form
-  - Quick-add action item form
   - Interactive ratings system
-  - Overdue action highlights
 - [ ] Comparison & Analytics
   - Side-by-side school comparison (2-3 schools)
   - Visual charts (cost comparison, ratings radar)
@@ -150,8 +163,8 @@ The AI analysis is specifically tuned to:
 ## 🤝 Credits
 
 Built by Claude Code for John Akalaonu
-**Version:** 1.2 School Discovery
-**Date:** November 19, 2025
+**Version:** 1.6 Multi-Action System
+**Date:** November 22, 2025
 **GitHub:** [bgslab/josephs-path-glory](https://github.com/bgslab/josephs-path-glory)
 
 ---

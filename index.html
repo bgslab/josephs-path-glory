@@ -22,10 +22,12 @@
 
     <style>
         /**
-         * Joseph's Path to Glory - v1.5 Team Info + Overdue Actions
+         * Joseph's Path to Glory - v1.6 Multi-Action System
          * Date: 2025-11-22
          *
          * Features:
+         * - Action item fields on school edit form
+         * - Quick-add action button on Actions tab
          * - Team ID display in Settings (for onboarding new members)
          * - Overdue action highlights with visual indicators
          * - AI School Discovery (reverse lookup with filters)
@@ -996,9 +998,111 @@
 
         <!-- ACTIONS VIEW -->
         <div id="actions-view" class="view">
-            <h2>All Actions</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin: 0;">All Actions</h2>
+                <button class="btn btn-primary" onclick="App.UI.showQuickAddAction()">+ Add Action</button>
+            </div>
+
+            <!-- Action Filters -->
+            <div class="filters" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                <select id="action-filter-status" onchange="App.UI.renderActions()" style="padding: 0.5rem; border-radius: 8px; background: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border);">
+                    <option value="all">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Complete">Complete</option>
+                    <option value="overdue">Overdue</option>
+                </select>
+                <select id="action-filter-owner" onchange="App.UI.renderActions()" style="padding: 0.5rem; border-radius: 8px; background: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border);">
+                    <option value="all">All Owners</option>
+                    <option value="John">John</option>
+                    <option value="Joseph">Joseph</option>
+                    <option value="Mom">Mom</option>
+                    <option value="Coach">Coach</option>
+                </select>
+                <select id="action-filter-school" onchange="App.UI.renderActions()" style="padding: 0.5rem; border-radius: 8px; background: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border); max-width: 150px;">
+                    <option value="all">All Schools</option>
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+
             <div id="actions-content">
                 <!-- Actions will be rendered here -->
+            </div>
+        </div>
+
+        <!-- QUICK ADD ACTION MODAL -->
+        <div id="quick-action-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Add Action</h2>
+                    <button class="modal-close" onclick="App.UI.closeModal('quick-action-modal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Single school select (for editing) -->
+                    <div class="form-group" id="quick-action-school-single-group">
+                        <label for="quick-action-school">School *</label>
+                        <select id="quick-action-school" required onchange="App.UI.onSchoolSelectChange()">
+                            <option value="">Select school...</option>
+                        </select>
+                    </div>
+                    <!-- Multi school select (for adding) -->
+                    <div class="form-group" id="quick-action-school-multi-group" style="display: none;">
+                        <label>Schools * <span class="text-muted" style="font-size: 0.8rem;">(select multiple)</span></label>
+                        <div id="quick-action-schools-checkboxes" style="max-height: 200px; overflow-y: auto; background: var(--color-bg-tertiary); border-radius: 8px; padding: 0.5rem;">
+                            <!-- Checkboxes populated dynamically -->
+                        </div>
+                    </div>
+                    <!-- Action Mode (Add new vs Replace) - shown when school has existing actions -->
+                    <div class="form-group" id="quick-action-mode-group" style="display: none;">
+                        <label>Action Mode</label>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="radio" name="quick-action-mode" value="add" checked onchange="App.UI.onActionModeChange()">
+                                <span>Add new action</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="radio" name="quick-action-mode" value="replace" onchange="App.UI.onActionModeChange()">
+                                <span>Replace existing</span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Select action to replace -->
+                    <div class="form-group" id="quick-action-replace-group" style="display: none;">
+                        <label>Select action to replace *</label>
+                        <div id="quick-action-replace-list" style="max-height: 150px; overflow-y: auto; background: var(--color-bg-tertiary); border-radius: 8px; padding: 0.5rem;">
+                            <!-- Radio buttons populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="quick-action-task">Action Item *</label>
+                        <input type="text" id="quick-action-task" placeholder="e.g., Send film, Schedule visit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quick-action-owner">Owner</label>
+                        <select id="quick-action-owner">
+                            <option value="">Not assigned</option>
+                            <option value="John">John</option>
+                            <option value="Joseph">Joseph</option>
+                            <option value="Mom">Mom</option>
+                            <option value="Coach">Coach</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quick-action-due">Due Date</label>
+                        <input type="date" id="quick-action-due">
+                    </div>
+                    <div class="form-group" id="quick-action-status-group">
+                        <label for="quick-action-status">Status</label>
+                        <select id="quick-action-status">
+                            <option value="Pending">Pending</option>
+                            <option value="Complete">Complete</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="App.UI.closeModal('quick-action-modal')">Cancel</button>
+                    <button class="btn btn-danger" id="quick-action-delete-btn" onclick="App.UI.deleteQuickAction()" style="margin-right: auto; display: none;">Delete</button>
+                    <button class="btn btn-primary" onclick="App.UI.saveQuickAction()">Save Action</button>
+                </div>
             </div>
         </div>
 
@@ -1165,6 +1269,37 @@
                             <option value="Interested">Interested</option>
                             <option value="Verbal Offer">Verbal Offer</option>
                             <option value="Official Offer">Official Offer</option>
+                        </select>
+                    </div>
+
+                    <h3 class="mt-2 mb-1">Next Action</h3>
+
+                    <div class="form-group">
+                        <label for="form-next-action">Action Item</label>
+                        <input type="text" id="form-next-action" placeholder="e.g., Schedule campus visit, Send film">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="form-action-owner">Owner</label>
+                        <select id="form-action-owner">
+                            <option value="">Not assigned</option>
+                            <option value="John">John</option>
+                            <option value="Joseph">Joseph</option>
+                            <option value="Mom">Mom</option>
+                            <option value="Coach">Coach</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="form-action-due">Due Date</label>
+                        <input type="date" id="form-action-due">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="form-action-status">Status</label>
+                        <select id="form-action-status">
+                            <option value="Pending">Pending</option>
+                            <option value="Complete">Complete</option>
                         </select>
                     </div>
 
@@ -3086,6 +3221,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                             <button class="tab-btn active" data-tab="overview">Overview</button>
                             <button class="tab-btn" data-tab="contacts">Contacts</button>
                             <button class="tab-btn" data-tab="actions">Actions</button>
+                            <button class="tab-btn" data-tab="activity">Activity</button>
                             <button class="tab-btn" data-tab="ai">AI Analysis</button>
                         </div>
 
@@ -3102,6 +3238,11 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         <!-- Tab: Actions -->
                         <div class="tab-content" data-tab="actions">
                             ${this.renderActionsTab(school)}
+                        </div>
+
+                        <!-- Tab: Activity -->
+                        <div class="tab-content" data-tab="activity">
+                            ${this.renderActivityTab(school)}
                         </div>
 
                         <!-- Tab: AI Analysis -->
@@ -3360,30 +3501,122 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
 
                 // Render Actions Tab
                 renderActionsTab(school) {
-                    return `
-                        <h3>Upcoming Actions</h3>
-                        ${school.actionHistory && school.actionHistory.filter(a => a.status === 'Pending').length > 0 ?
-                            school.actionHistory.filter(a => a.status === 'Pending').map(a => `
-                                <div class="history-item">
-                                    <p><strong>${a.action}</strong></p>
-                                    <p><strong>Owner:</strong> ${a.owner}</p>
-                                    <p><strong>Due:</strong> ${App.Utils.formatDate(a.dueDate)}</p>
-                                </div>
-                            `).join('') :
-                            '<p class="text-muted">No pending actions.</p>'
-                        }
+                    // Ensure migration
+                    this.migrateSchoolActions(school);
 
-                        <h3 class="mt-2">Completed Actions</h3>
-                        ${school.actionHistory && school.actionHistory.filter(a => a.status === 'Complete').length > 0 ?
-                            school.actionHistory.filter(a => a.status === 'Complete').map(a => `
-                                <div class="history-item">
-                                    <p><strong>${a.action}</strong></p>
-                                    <p><strong>Completed:</strong> ${App.Utils.formatDate(a.completedDate)}</p>
+                    const pending = school.actions ? school.actions.filter(a => a.status !== 'Complete') : [];
+                    const completed = school.actions ? school.actions.filter(a => a.status === 'Complete') : [];
+
+                    // Sort pending: overdue first, then by due date
+                    pending.sort((a, b) => {
+                        const aOverdue = this.isOverdue(a.dueDate);
+                        const bOverdue = this.isOverdue(b.dueDate);
+                        if (aOverdue && !bOverdue) return -1;
+                        if (!aOverdue && bOverdue) return 1;
+                        if (a.dueDate && b.dueDate) return new Date(a.dueDate) - new Date(b.dueDate);
+                        return 0;
+                    });
+
+                    return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Pending Actions (${pending.length})</h3>
+                            <button class="btn btn-primary btn-sm" onclick="App.UI.showAddActionForSchool('${school.id}')">+ Add Action</button>
+                        </div>
+                        ${pending.length > 0 ? pending.map(action => {
+                            const isOverdue = this.isOverdue(action.dueDate);
+                            return `
+                                <div class="history-item" style="cursor: pointer; ${isOverdue ? 'border-left: 4px solid var(--color-danger); background: rgba(230, 57, 70, 0.1);' : ''}" onclick="App.UI.editActionForSchool('${school.id}', '${action.id}')">
+                                    <p><strong>${action.action}</strong></p>
+                                    ${action.owner ? `<p><strong>Owner:</strong> ${action.owner}</p>` : ''}
+                                    ${action.dueDate ? `
+                                        <p>
+                                            <strong>Due:</strong> ${App.Utils.formatDate(action.dueDate)}
+                                            ${isOverdue ? '<span style="color: var(--color-danger); font-weight: bold; margin-left: 0.5rem;">⚠️ OVERDUE</span>' : ''}
+                                        </p>
+                                    ` : ''}
+                                    <p class="text-muted" style="font-size: 0.8rem; margin-top: 0.5rem;">
+                                        ${action.createdAt ? `Added: ${App.Utils.formatDate(action.createdAt)}` : ''}
+                                        ${action.modifiedAt && action.modifiedAt !== action.createdAt ?
+                                            ` · Modified: ${App.Utils.formatDate(action.modifiedAt)}` : ''}
+                                    </p>
+                                    <p class="text-muted" style="font-size: 0.75rem;">Click to edit</p>
                                 </div>
-                            `).join('') :
-                            '<p class="text-muted">No completed actions yet.</p>'
+                            `;
+                        }).join('') : '<p class="text-muted">No pending actions.</p>'}
+
+                        <h3 class="mt-2">Completed Actions (${completed.length})</h3>
+                        ${completed.length > 0 ? completed.map(action => `
+                            <div class="history-item" style="cursor: pointer;" onclick="App.UI.editActionForSchool('${school.id}', '${action.id}')">
+                                <p><strong>${action.action}</strong></p>
+                                ${action.owner ? `<p><strong>Owner:</strong> ${action.owner}</p>` : ''}
+                                ${action.completedAt ? `<p><strong>Completed:</strong> ${App.Utils.formatDate(action.completedAt)}</p>` : ''}
+                                <p class="text-muted" style="font-size: 0.75rem;">Click to edit</p>
+                            </div>
+                        `).join('') : '<p class="text-muted">No completed actions yet.</p>'}
+                    `;
+                },
+
+                // Render Activity Tab (action history/audit log)
+                renderActivityTab(school) {
+                    this.migrateSchoolActions(school);
+
+                    const history = school.actionHistory || [];
+
+                    // Sort by timestamp, newest first
+                    const sortedHistory = [...history].sort((a, b) =>
+                        new Date(b.timestamp) - new Date(a.timestamp)
+                    );
+
+                    const getActivityIcon = (type) => {
+                        switch(type) {
+                            case 'added': return '➕';
+                            case 'completed': return '✅';
+                            case 'modified': return '✏️';
+                            case 'replaced': return '🔄';
+                            case 'deleted': return '🗑️';
+                            case 'migrated': return '📦';
+                            default: return '📝';
                         }
-                        <p class="text-muted mt-2">Edit school to add action items (Phase 3 will add quick-add form).</p>
+                    };
+
+                    const getActivityLabel = (type) => {
+                        switch(type) {
+                            case 'added': return 'Added';
+                            case 'completed': return 'Completed';
+                            case 'modified': return 'Modified';
+                            case 'replaced': return 'Replaced';
+                            case 'deleted': return 'Deleted';
+                            case 'migrated': return 'Migrated from old system';
+                            default: return type;
+                        }
+                    };
+
+                    const getActivityColor = (type) => {
+                        switch(type) {
+                            case 'added': return 'var(--color-success)';
+                            case 'completed': return 'var(--color-success)';
+                            case 'deleted': return 'var(--color-danger)';
+                            case 'replaced': return 'var(--color-warning, #f39c12)';
+                            default: return 'var(--color-text-secondary)';
+                        }
+                    };
+
+                    return `
+                        <h3>Activity History</h3>
+                        <p class="text-muted" style="margin-bottom: 1rem;">Complete log of all action changes for this school.</p>
+                        ${sortedHistory.length > 0 ? sortedHistory.map(entry => `
+                            <div class="history-item" style="border-left: 4px solid ${getActivityColor(entry.type)};">
+                                <p style="margin: 0 0 0.25rem 0;">
+                                    <span style="font-size: 1.1rem; margin-right: 0.5rem;">${getActivityIcon(entry.type)}</span>
+                                    <strong style="color: ${getActivityColor(entry.type)};">${getActivityLabel(entry.type)}</strong>
+                                </p>
+                                <p style="margin: 0.25rem 0;"><strong>Action:</strong> ${entry.action}</p>
+                                ${entry.oldAction ? `<p style="margin: 0.25rem 0; font-size: 0.9rem;" class="text-muted">Replaced: "${entry.oldAction}"</p>` : ''}
+                                <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0 0 0;">
+                                    ${App.Utils.formatDate(entry.timestamp)} · By: ${entry.by || 'Unknown'}
+                                </p>
+                            </div>
+                        `).join('') : '<p class="text-muted">No activity recorded yet. Actions and changes will appear here.</p>'}
                     `;
                 },
 
@@ -3530,22 +3763,68 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                     const schools = App.Storage.getSchools();
                     let allActions = [];
 
+                    // Migrate and collect all actions
                     schools.forEach(school => {
-                        if (school.nextAction) {
-                            const isOverdue = this.isOverdue(school.actionDueDate);
-                            allActions.push({
-                                school: school.schoolName,
-                                action: school.nextAction,
-                                owner: school.actionOwner || 'Not assigned',
-                                dueDate: school.actionDueDate,
-                                status: school.actionStatus || 'Pending',
-                                isOverdue: isOverdue
+                        this.migrateSchoolActions(school);
+                        if (school.actions && school.actions.length > 0) {
+                            school.actions.forEach(action => {
+                                allActions.push({
+                                    schoolId: school.id,
+                                    actionId: action.id,
+                                    school: school.schoolName,
+                                    action: action.action,
+                                    owner: action.owner || 'Not assigned',
+                                    dueDate: action.dueDate,
+                                    status: action.status || 'Pending',
+                                    isOverdue: this.isOverdue(action.dueDate) && action.status !== 'Complete',
+                                    createdAt: action.createdAt,
+                                    modifiedAt: action.modifiedAt,
+                                    completedAt: action.completedAt
+                                });
                             });
                         }
                     });
 
-                    const pending = allActions.filter(a => a.status === 'Pending');
-                    const completed = allActions.filter(a => a.status === 'Complete');
+                    // Populate school filter dropdown
+                    const schoolFilter = document.getElementById('action-filter-school');
+                    if (schoolFilter) {
+                        const currentValue = schoolFilter.value;
+                        schoolFilter.innerHTML = '<option value="all">All Schools</option>';
+                        const schoolsWithActions = [...new Set(allActions.map(a => a.schoolId))];
+                        schools.sort((a, b) => a.schoolName.localeCompare(b.schoolName)).forEach(s => {
+                            if (schoolsWithActions.includes(s.id)) {
+                                const option = document.createElement('option');
+                                option.value = s.id;
+                                option.textContent = s.schoolName;
+                                if (s.id === currentValue) option.selected = true;
+                                schoolFilter.appendChild(option);
+                            }
+                        });
+                    }
+
+                    // Get filter values
+                    const statusFilter = document.getElementById('action-filter-status')?.value || 'all';
+                    const ownerFilter = document.getElementById('action-filter-owner')?.value || 'all';
+                    const schoolFilterValue = document.getElementById('action-filter-school')?.value || 'all';
+
+                    // Apply filters
+                    let filteredActions = allActions;
+                    if (statusFilter === 'Pending') {
+                        filteredActions = filteredActions.filter(a => a.status === 'Pending');
+                    } else if (statusFilter === 'Complete') {
+                        filteredActions = filteredActions.filter(a => a.status === 'Complete');
+                    } else if (statusFilter === 'overdue') {
+                        filteredActions = filteredActions.filter(a => a.isOverdue && a.status === 'Pending');
+                    }
+                    if (ownerFilter !== 'all') {
+                        filteredActions = filteredActions.filter(a => a.owner === ownerFilter);
+                    }
+                    if (schoolFilterValue !== 'all') {
+                        filteredActions = filteredActions.filter(a => a.schoolId === schoolFilterValue);
+                    }
+
+                    const pending = filteredActions.filter(a => a.status === 'Pending');
+                    const completed = filteredActions.filter(a => a.status === 'Complete');
                     const overdue = pending.filter(a => a.isOverdue);
 
                     // Sort pending: overdue first, then by due date
@@ -3561,7 +3840,7 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                     const content = `
                         <h3>Pending Actions (${pending.length})${overdueLabel}</h3>
                         ${pending.length > 0 ? pending.map(a => `
-                            <div class="history-item" style="${a.isOverdue ? 'border-left: 4px solid var(--color-danger); background: rgba(230, 57, 70, 0.1);' : ''}">
+                            <div class="history-item" style="cursor: pointer; ${a.isOverdue ? 'border-left: 4px solid var(--color-danger); background: rgba(230, 57, 70, 0.1);' : ''}" onclick="App.UI.editActionForSchool('${a.schoolId}', '${a.actionId}')">
                                 <p><strong>${a.school}</strong></p>
                                 <p>${a.action}</p>
                                 <p><strong>Owner:</strong> ${a.owner}</p>
@@ -3571,19 +3850,525 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                                         ${a.isOverdue ? '<span style="color: var(--color-danger); font-weight: bold; margin-left: 0.5rem;">⚠️ OVERDUE</span>' : ''}
                                     </p>
                                 ` : ''}
+                                <p class="text-muted" style="font-size: 0.8rem; margin-top: 0.5rem;">
+                                    ${a.createdAt ? `Added: ${App.Utils.formatDate(a.createdAt)}` : ''}
+                                    ${a.modifiedAt && a.modifiedAt !== a.createdAt ? ` · Modified: ${App.Utils.formatDate(a.modifiedAt)}` : ''}
+                                </p>
+                                <p class="text-muted" style="font-size: 0.75rem;">Click to edit</p>
                             </div>
                         `).join('') : '<p class="text-muted">No pending actions.</p>'}
 
                         <h3 class="mt-2">Completed Actions (${completed.length})</h3>
                         ${completed.length > 0 ? completed.map(a => `
-                            <div class="history-item">
+                            <div class="history-item" style="cursor: pointer;" onclick="App.UI.editActionForSchool('${a.schoolId}', '${a.actionId}')">
                                 <p><strong>${a.school}</strong></p>
                                 <p>${a.action}</p>
+                                ${a.completedAt ? `<p><strong>Completed:</strong> ${App.Utils.formatDate(a.completedAt)}</p>` : ''}
+                                <p class="text-muted" style="font-size: 0.75rem;">Click to edit</p>
                             </div>
                         `).join('') : '<p class="text-muted">No completed actions yet.</p>'}
                     `;
 
                     document.getElementById('actions-content').innerHTML = content;
+                },
+
+                // Currently editing action ID (for edit mode)
+                editingActionId: null,
+
+                // Edit action for a specific school and action (opens edit action modal)
+                editActionForSchool(schoolId, actionId = null) {
+                    const school = App.Storage.getSchool(schoolId);
+                    if (!school) return;
+
+                    // Migrate if needed
+                    this.migrateSchoolActions(school);
+
+                    // Find the action to edit
+                    let action = null;
+                    if (actionId) {
+                        action = school.actions.find(a => a.id === actionId);
+                    } else if (school.actions.length > 0) {
+                        action = school.actions[0]; // Default to first action
+                    }
+
+                    if (!action) {
+                        alert('No action found to edit.');
+                        return;
+                    }
+
+                    this.editingActionId = action.id;
+
+                    // Show single-select, hide multi-select (edit mode)
+                    document.getElementById('quick-action-school-single-group').style.display = 'block';
+                    document.getElementById('quick-action-school-multi-group').style.display = 'none';
+                    document.getElementById('quick-action-mode-group').style.display = 'none';
+                    document.getElementById('quick-action-replace-group').style.display = 'none';
+                    document.getElementById('quick-action-status-group').style.display = 'block';
+                    document.getElementById('quick-action-delete-btn').style.display = 'block';
+
+                    // Populate the single school dropdown
+                    const schoolSelect = document.getElementById('quick-action-school');
+                    schoolSelect.innerHTML = '<option value="">Select school...</option>';
+
+                    const schools = App.Storage.getSchools();
+                    schools.sort((a, b) => a.schoolName.localeCompare(b.schoolName));
+                    schools.forEach(s => {
+                        const option = document.createElement('option');
+                        option.value = s.id;
+                        option.textContent = s.schoolName;
+                        if (s.id === schoolId) option.selected = true;
+                        schoolSelect.appendChild(option);
+                    });
+
+                    document.getElementById('quick-action-task').value = action.action || '';
+                    document.getElementById('quick-action-owner').value = action.owner || '';
+                    document.getElementById('quick-action-due').value = action.dueDate || '';
+                    document.getElementById('quick-action-status').value = action.status || 'Pending';
+
+                    // Change modal title to Edit
+                    document.querySelector('#quick-action-modal .modal-title').textContent = 'Edit Action';
+
+                    this.openModal('quick-action-modal');
+                },
+
+                // Show quick add action modal (multi-school mode)
+                showQuickAddAction() {
+                    const schools = App.Storage.getSchools();
+                    this.editingActionId = null;
+
+                    // Show multi-select, hide single select
+                    document.getElementById('quick-action-school-single-group').style.display = 'none';
+                    document.getElementById('quick-action-school-multi-group').style.display = 'block';
+                    document.getElementById('quick-action-mode-group').style.display = 'none';
+                    document.getElementById('quick-action-replace-group').style.display = 'none';
+                    document.getElementById('quick-action-status-group').style.display = 'none'; // Hide status for new actions
+                    document.getElementById('quick-action-delete-btn').style.display = 'none';
+
+                    // Populate checkboxes with change listener for Add/Replace mode
+                    const checkboxContainer = document.getElementById('quick-action-schools-checkboxes');
+                    checkboxContainer.innerHTML = '';
+
+                    schools.sort((a, b) => a.schoolName.localeCompare(b.schoolName));
+                    schools.forEach(school => {
+                        this.migrateSchoolActions(school);
+                        const actionCount = school.actions ? school.actions.length : 0;
+                        const actionLabel = actionCount > 0 ? ` (${actionCount} action${actionCount > 1 ? 's' : ''})` : '';
+                        const div = document.createElement('div');
+                        div.style.cssText = 'padding: 0.5rem; border-bottom: 1px solid var(--color-border);';
+                        div.innerHTML = `
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" value="${school.id}" class="quick-action-school-checkbox" onchange="App.UI.onMultiSchoolCheckboxChange()">
+                                <span>${school.schoolName}${actionLabel ? '<span class="text-muted" style="font-size: 0.75rem;">' + actionLabel + '</span>' : ''}</span>
+                            </label>
+                        `;
+                        checkboxContainer.appendChild(div);
+                    });
+
+                    // Clear form and reset title
+                    document.getElementById('quick-action-task').value = '';
+                    document.getElementById('quick-action-owner').value = '';
+                    document.getElementById('quick-action-due').value = '';
+                    document.getElementById('quick-action-status').value = 'Pending';
+                    document.querySelector('#quick-action-modal .modal-title').textContent = 'Add Action to Schools';
+
+                    this.openModal('quick-action-modal');
+                },
+
+                // Handle checkbox change in multi-school mode - show Add/Replace when single school with actions selected
+                onMultiSchoolCheckboxChange() {
+                    const checkedBoxes = document.querySelectorAll('.quick-action-school-checkbox:checked');
+
+                    if (checkedBoxes.length === 1) {
+                        // Single school selected - check if it has actions
+                        const schoolId = checkedBoxes[0].value;
+                        const school = App.Storage.getSchool(schoolId);
+                        if (school) {
+                            this.migrateSchoolActions(school);
+                            if (school.actions && school.actions.length > 0) {
+                                // Show Add/Replace options
+                                document.getElementById('quick-action-mode-group').style.display = 'block';
+                                document.querySelector('input[name="quick-action-mode"][value="add"]').checked = true;
+                                document.getElementById('quick-action-replace-group').style.display = 'none';
+                                this.populateReplaceList(school);
+                                return;
+                            }
+                        }
+                    }
+
+                    // Multiple schools or no actions - hide Add/Replace options
+                    document.getElementById('quick-action-mode-group').style.display = 'none';
+                    document.getElementById('quick-action-replace-group').style.display = 'none';
+                },
+
+                // Handle school select change (for single-school add mode)
+                onSchoolSelectChange() {
+                    if (this.editingActionId) return; // Don't show mode options when editing
+
+                    const schoolId = document.getElementById('quick-action-school').value;
+                    if (!schoolId) {
+                        document.getElementById('quick-action-mode-group').style.display = 'none';
+                        document.getElementById('quick-action-replace-group').style.display = 'none';
+                        return;
+                    }
+
+                    const school = App.Storage.getSchool(schoolId);
+                    if (!school) return;
+
+                    this.migrateSchoolActions(school);
+
+                    // Show mode options if school has existing actions
+                    if (school.actions && school.actions.length > 0) {
+                        document.getElementById('quick-action-mode-group').style.display = 'block';
+                        // Reset to "add" mode
+                        document.querySelector('input[name="quick-action-mode"][value="add"]').checked = true;
+                        document.getElementById('quick-action-replace-group').style.display = 'none';
+                        this.populateReplaceList(school);
+                    } else {
+                        document.getElementById('quick-action-mode-group').style.display = 'none';
+                        document.getElementById('quick-action-replace-group').style.display = 'none';
+                    }
+                },
+
+                // Handle action mode change (add new vs replace)
+                onActionModeChange() {
+                    const mode = document.querySelector('input[name="quick-action-mode"]:checked').value;
+                    if (mode === 'replace') {
+                        document.getElementById('quick-action-replace-group').style.display = 'block';
+                    } else {
+                        document.getElementById('quick-action-replace-group').style.display = 'none';
+                    }
+                },
+
+                // Populate the replace action list
+                populateReplaceList(school) {
+                    const container = document.getElementById('quick-action-replace-list');
+                    container.innerHTML = '';
+
+                    if (!school.actions || school.actions.length === 0) return;
+
+                    school.actions.forEach((action, index) => {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'padding: 0.5rem; border-bottom: 1px solid var(--color-border);';
+                        div.innerHTML = `
+                            <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer;">
+                                <input type="radio" name="quick-action-replace-id" value="${action.id}" ${index === 0 ? 'checked' : ''}>
+                                <div>
+                                    <div>${action.action}</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">
+                                        ${action.owner ? 'Owner: ' + action.owner + ' · ' : ''}
+                                        ${action.dueDate ? 'Due: ' + App.Utils.formatDate(action.dueDate) : 'No due date'}
+                                    </div>
+                                </div>
+                            </label>
+                        `;
+                        container.appendChild(div);
+                    });
+                },
+
+                // Migrate school from old single-action format to new multi-action format
+                migrateSchoolActions(school) {
+                    if (!school.actions) {
+                        school.actions = [];
+                        school.actionHistory = [];
+
+                        // Migrate old single action if exists
+                        if (school.nextAction) {
+                            const migratedAction = {
+                                id: App.Utils.generateId(),
+                                action: school.nextAction,
+                                owner: school.actionOwner || '',
+                                dueDate: school.actionDueDate || '',
+                                status: school.actionStatus || 'Pending',
+                                createdAt: school.actionCreatedAt || new Date().toISOString(),
+                                modifiedAt: school.actionModifiedAt || new Date().toISOString(),
+                                completedAt: school.actionCompletedAt || null
+                            };
+                            school.actions.push(migratedAction);
+
+                            // Add migration to history
+                            school.actionHistory.push({
+                                type: 'migrated',
+                                actionId: migratedAction.id,
+                                action: migratedAction.action,
+                                timestamp: new Date().toISOString(),
+                                by: 'System'
+                            });
+                        }
+                    }
+                },
+
+                // Add action history entry
+                addActionHistory(school, type, action, oldAction = null) {
+                    if (!school.actionHistory) school.actionHistory = [];
+                    const entry = {
+                        type: type, // 'added', 'completed', 'modified', 'replaced', 'deleted'
+                        actionId: action.id,
+                        action: action.action,
+                        timestamp: new Date().toISOString(),
+                        by: action.owner || 'Unknown'
+                    };
+                    if (oldAction) {
+                        entry.oldAction = oldAction.action;
+                    }
+                    school.actionHistory.push(entry);
+                },
+
+                // Save quick action (handles both single edit and multi-add modes)
+                saveQuickAction() {
+                    const task = document.getElementById('quick-action-task').value;
+                    if (!task) {
+                        alert('Please enter an action item.');
+                        return;
+                    }
+
+                    const isMultiMode = document.getElementById('quick-action-school-multi-group').style.display !== 'none';
+                    const owner = document.getElementById('quick-action-owner').value;
+                    const dueDate = document.getElementById('quick-action-due').value;
+                    const now = new Date().toISOString();
+
+                    if (isMultiMode) {
+                        // Multi-school mode (checkboxes)
+                        const checkboxes = document.querySelectorAll('.quick-action-school-checkbox:checked');
+                        if (checkboxes.length === 0) {
+                            alert('Please select at least one school.');
+                            return;
+                        }
+
+                        // Check if single school with replace mode
+                        const mode = document.querySelector('input[name="quick-action-mode"]:checked')?.value || 'add';
+                        const isSingleSchoolReplace = checkboxes.length === 1 && mode === 'replace';
+
+                        if (isSingleSchoolReplace) {
+                            // Single school replace mode
+                            const replaceId = document.querySelector('input[name="quick-action-replace-id"]:checked')?.value;
+                            if (!replaceId) {
+                                alert('Please select an action to replace.');
+                                return;
+                            }
+
+                            const school = App.Storage.getSchool(checkboxes[0].value);
+                            if (school) {
+                                this.migrateSchoolActions(school);
+                                const oldActionIndex = school.actions.findIndex(a => a.id === replaceId);
+                                if (oldActionIndex !== -1) {
+                                    const oldAction = school.actions[oldActionIndex];
+                                    const newAction = {
+                                        id: App.Utils.generateId(),
+                                        action: task,
+                                        owner: owner,
+                                        dueDate: dueDate,
+                                        status: 'Pending',
+                                        createdAt: now,
+                                        modifiedAt: now,
+                                        completedAt: null
+                                    };
+                                    // Remove old action and add new one
+                                    school.actions.splice(oldActionIndex, 1, newAction);
+                                    this.addActionHistory(school, 'replaced', newAction, oldAction);
+                                    App.Storage.saveSchool(school);
+                                }
+                            }
+                        } else {
+                            // Multiple schools or add mode - add new actions
+                            checkboxes.forEach(cb => {
+                                const school = App.Storage.getSchool(cb.value);
+                                if (school) {
+                                    this.migrateSchoolActions(school);
+                                    const newAction = {
+                                        id: App.Utils.generateId(),
+                                        action: task,
+                                        owner: owner,
+                                        dueDate: dueDate,
+                                        status: 'Pending',
+                                        createdAt: now,
+                                        modifiedAt: now,
+                                        completedAt: null
+                                    };
+                                    school.actions.push(newAction);
+                                    this.addActionHistory(school, 'added', newAction);
+                                    App.Storage.saveSchool(school);
+                                }
+                            });
+                        }
+
+                        this.closeModal('quick-action-modal');
+                        this.renderActions();
+                    } else if (this.editingActionId) {
+                        // Single school edit mode (editing existing action)
+                        const schoolId = document.getElementById('quick-action-school').value;
+                        if (!schoolId) {
+                            alert('Please select a school.');
+                            return;
+                        }
+
+                        const school = App.Storage.getSchool(schoolId);
+                        if (!school) return;
+
+                        this.migrateSchoolActions(school);
+                        const action = school.actions.find(a => a.id === this.editingActionId);
+                        if (!action) return;
+
+                        const newStatus = document.getElementById('quick-action-status').value;
+                        const wasComplete = action.status === 'Complete';
+                        const isNowComplete = newStatus === 'Complete';
+
+                        // Update action
+                        action.action = task;
+                        action.owner = owner;
+                        action.dueDate = dueDate;
+                        action.status = newStatus;
+                        action.modifiedAt = now;
+
+                        // Handle completion timestamp
+                        if (isNowComplete && !wasComplete) {
+                            action.completedAt = now;
+                            this.addActionHistory(school, 'completed', action);
+                        } else if (!isNowComplete && wasComplete) {
+                            action.completedAt = null;
+                            this.addActionHistory(school, 'modified', action);
+                        } else {
+                            this.addActionHistory(school, 'modified', action);
+                        }
+
+                        App.Storage.saveSchool(school);
+                        this.closeModal('quick-action-modal');
+                        this.renderActions();
+                        this.editingActionId = null;
+                    } else {
+                        // Single school add mode (with optional replace)
+                        const schoolId = document.getElementById('quick-action-school').value;
+                        if (!schoolId) {
+                            alert('Please select a school.');
+                            return;
+                        }
+
+                        const school = App.Storage.getSchool(schoolId);
+                        if (!school) return;
+
+                        this.migrateSchoolActions(school);
+
+                        const mode = document.querySelector('input[name="quick-action-mode"]:checked')?.value || 'add';
+
+                        if (mode === 'replace' && school.actions.length > 0) {
+                            // Replace existing action
+                            const replaceId = document.querySelector('input[name="quick-action-replace-id"]:checked')?.value;
+                            if (!replaceId) {
+                                alert('Please select an action to replace.');
+                                return;
+                            }
+
+                            const oldActionIndex = school.actions.findIndex(a => a.id === replaceId);
+                            if (oldActionIndex === -1) return;
+
+                            const oldAction = school.actions[oldActionIndex];
+                            const newAction = {
+                                id: App.Utils.generateId(),
+                                action: task,
+                                owner: owner,
+                                dueDate: dueDate,
+                                status: 'Pending',
+                                createdAt: now,
+                                modifiedAt: now,
+                                completedAt: null
+                            };
+
+                            // Replace the action
+                            school.actions.splice(oldActionIndex, 1, newAction);
+                            this.addActionHistory(school, 'replaced', newAction, oldAction);
+                        } else {
+                            // Add new action
+                            const newAction = {
+                                id: App.Utils.generateId(),
+                                action: task,
+                                owner: owner,
+                                dueDate: dueDate,
+                                status: 'Pending',
+                                createdAt: now,
+                                modifiedAt: now,
+                                completedAt: null
+                            };
+                            school.actions.push(newAction);
+                            this.addActionHistory(school, 'added', newAction);
+                        }
+
+                        App.Storage.saveSchool(school);
+                        this.closeModal('quick-action-modal');
+                        this.renderActions();
+                    }
+                },
+
+                // Delete action from school
+                deleteQuickAction() {
+                    const schoolId = document.getElementById('quick-action-school').value;
+                    if (!schoolId || !this.editingActionId) return;
+
+                    if (!confirm('Delete this action item?')) return;
+
+                    const school = App.Storage.getSchool(schoolId);
+                    if (!school) return;
+
+                    this.migrateSchoolActions(school);
+
+                    const actionIndex = school.actions.findIndex(a => a.id === this.editingActionId);
+                    if (actionIndex === -1) return;
+
+                    const deletedAction = school.actions[actionIndex];
+                    school.actions.splice(actionIndex, 1);
+                    this.addActionHistory(school, 'deleted', deletedAction);
+
+                    App.Storage.saveSchool(school);
+                    this.closeModal('quick-action-modal');
+                    this.renderActions();
+                    this.editingActionId = null;
+                },
+
+                // Show add action for a specific school (single school mode)
+                showAddActionForSchool(schoolId) {
+                    const school = App.Storage.getSchool(schoolId);
+                    if (!school) return;
+
+                    this.editingActionId = null;
+                    this.migrateSchoolActions(school);
+
+                    // Show single-select, hide multi-select
+                    document.getElementById('quick-action-school-single-group').style.display = 'block';
+                    document.getElementById('quick-action-school-multi-group').style.display = 'none';
+                    document.getElementById('quick-action-status-group').style.display = 'none';
+                    document.getElementById('quick-action-delete-btn').style.display = 'none';
+
+                    // Populate the single school dropdown
+                    const schoolSelect = document.getElementById('quick-action-school');
+                    schoolSelect.innerHTML = '<option value="">Select school...</option>';
+
+                    const schools = App.Storage.getSchools();
+                    schools.sort((a, b) => a.schoolName.localeCompare(b.schoolName));
+                    schools.forEach(s => {
+                        const option = document.createElement('option');
+                        option.value = s.id;
+                        option.textContent = s.schoolName;
+                        if (s.id === schoolId) option.selected = true;
+                        schoolSelect.appendChild(option);
+                    });
+
+                    // Clear form
+                    document.getElementById('quick-action-task').value = '';
+                    document.getElementById('quick-action-owner').value = '';
+                    document.getElementById('quick-action-due').value = '';
+                    document.getElementById('quick-action-status').value = 'Pending';
+
+                    // Show mode options if school has existing actions
+                    if (school.actions && school.actions.length > 0) {
+                        document.getElementById('quick-action-mode-group').style.display = 'block';
+                        document.querySelector('input[name="quick-action-mode"][value="add"]').checked = true;
+                        document.getElementById('quick-action-replace-group').style.display = 'none';
+                        this.populateReplaceList(school);
+                    } else {
+                        document.getElementById('quick-action-mode-group').style.display = 'none';
+                        document.getElementById('quick-action-replace-group').style.display = 'none';
+                    }
+
+                    document.querySelector('#quick-action-modal .modal-title').textContent = 'Add Action to ' + school.schoolName;
+                    this.openModal('quick-action-modal');
                 },
 
                 // Show add school modal
@@ -3616,6 +4401,10 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                     document.getElementById('form-interest-their').value = school.theirInterestLevel || 'Unknown';
                     document.getElementById('form-likelihood').value = school.likelihood || 'Target';
                     document.getElementById('form-offer-status').value = school.offerStatus || 'None';
+                    document.getElementById('form-next-action').value = school.nextAction || '';
+                    document.getElementById('form-action-owner').value = school.actionOwner || '';
+                    document.getElementById('form-action-due').value = school.actionDueDate || '';
+                    document.getElementById('form-action-status').value = school.actionStatus || 'Pending';
                     document.getElementById('form-notes').value = school.notes || '';
 
                     this.editingSchoolId = schoolId;
@@ -3647,6 +4436,21 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         likelihood: document.getElementById('form-likelihood').value,
                         offerStatus: document.getElementById('form-offer-status').value,
                         notes: document.getElementById('form-notes').value,
+
+                        // Action item fields with timestamps
+                        nextAction: document.getElementById('form-next-action').value,
+                        actionOwner: document.getElementById('form-action-owner').value,
+                        actionDueDate: document.getElementById('form-action-due').value,
+                        actionStatus: document.getElementById('form-action-status').value,
+                        // Set timestamps based on action changes
+                        actionCreatedAt: this.editingSchoolId ?
+                            (App.Storage.getSchool(this.editingSchoolId).actionCreatedAt ||
+                             (document.getElementById('form-next-action').value ? new Date().toISOString() : null)) :
+                            (document.getElementById('form-next-action').value ? new Date().toISOString() : null),
+                        actionModifiedAt: document.getElementById('form-next-action').value ? new Date().toISOString() : null,
+                        actionCompletedAt: document.getElementById('form-action-status').value === 'Complete' ?
+                            (this.editingSchoolId && App.Storage.getSchool(this.editingSchoolId).actionCompletedAt ?
+                             App.Storage.getSchool(this.editingSchoolId).actionCompletedAt : new Date().toISOString()) : null,
 
                         // Preserve existing data
                         contactHistory: this.editingSchoolId ?
@@ -3764,6 +4568,11 @@ Return EXACTLY 10 schools ranked from best fit (#1) to 10th best fit (#10).`;
                         const v = c === 'x' ? r : (r & 0x3 | 0x8);
                         return v.toString(16);
                     });
+                },
+
+                // Generate shorter ID for actions
+                generateId() {
+                    return 'action_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 },
 
                 // Format date

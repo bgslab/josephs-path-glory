@@ -1,6 +1,6 @@
 # Joseph's Path to Glory - Project Context
 **Last Updated:** November 22, 2025
-**Current Version:** v1.4 XOS Theme + Stat Filters
+**Current Version:** v1.6 Multi-Action System
 **Status:** ✅ Production - Live at https://bgslab.github.io/josephs-path-glory
 
 ---
@@ -46,7 +46,7 @@ The AI analysis is specifically tuned to:
 - **AI:** Anthropic Claude API (Sonnet 4)
 - **API Proxy:** Cloudflare Worker (CORS bypass)
 - **Deployment:** GitHub Pages (https://bgslab.github.io/josephs-path-glory)
-- **File Size:** Single ~150KB HTML file (3,224 lines)
+- **File Size:** Single ~180KB HTML file (4,530 lines)
 - **Mobile-First:** Optimized for iPhone 480px viewport
 - **Theme:** XOS Digital professional theme (dark charcoal + red accents)
 
@@ -87,7 +87,7 @@ App.UI            // Lines 2669-3696 - View management & rendering
 
 ---
 
-## 🎯 CURRENT FEATURES (v1.2)
+## 🎯 CURRENT FEATURES (v1.6)
 
 ### Phase 1: Core Database & Dashboard
 - **School Tracker** - Manage 50+ schools with complete CRUD operations
@@ -126,7 +126,7 @@ App.UI            // Lines 2669-3696 - View management & rendering
 - **Team Management** - Create team or join existing team with Team ID
 - **Real-Time Team Sync** - Changes from any team member appear instantly for everyone
 
-### Phase 4: School Discovery (AI Reverse Lookup) ✨ NEW (v1.2)
+### Phase 4: School Discovery (AI Reverse Lookup)
 - **Smart Filters** - Search by level (JUCO/D1/D2/D3/NAIA), state, conference, minimum score
 - **AI-Powered Discovery** - Claude analyzes and ranks top 10 schools matching Joseph's profile
 - **Stack-Ranked Results** - Schools displayed 1-10 with overall scores and reasoning
@@ -135,6 +135,17 @@ App.UI            // Lines 2669-3696 - View management & rendering
 - **Already Tracked Badge** - Shows ✓ for schools already in your list
 - **Same Scoring Logic** - Uses identical 5-dimension criteria and weights as individual research
 - **Cost-Efficient** - ~$0.05 per discovery search (~3,000 tokens output vs ~1,500 for individual school)
+
+### Phase 5: Multi-Action System ✨ NEW (v1.6)
+- **Multiple Actions Per School** - Track unlimited action items for each school (not just one)
+- **Add or Replace** - Choose to add new action or replace an existing one
+- **Action History/Audit Log** - Complete history of all action changes per school with timestamps
+- **Activity Tab** - New tab in school detail showing all activity (added, completed, replaced, deleted)
+- **Bulk Action Creation** - Add the same action to multiple schools at once via checkboxes
+- **Dynamic Mode Selection** - Add/Replace options appear when single school with existing actions is selected
+- **Action Timestamps** - See when actions were added, modified, or completed
+- **Automatic Migration** - Existing single-action data automatically converted to new array format
+- **Overdue Highlighting** - Overdue actions highlighted in red across all views
 
 ---
 
